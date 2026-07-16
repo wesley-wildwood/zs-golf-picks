@@ -53,32 +53,16 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("David Thompson"), normalizeName("Davis Thompson"));
 });
 
-test("Scottish Open picks produce both team scores", () => {
+test("The Open picks produce both team scores", () => {
   const names = [
-    "Rory McIlroy", "Tommy Fleetwood", "Matt Fitzpatrick", "Ludvig Åberg", "Wyndham Clark", "Tyrrell Hatton",
-    "Scottie Scheffler", "Xander Schauffele", "Chris Gotterup", "Robert MacIntyre", "Viktor Hovland", "Justin Thomas"
+    "Scottie Scheffler", "Matt Fitzpatrick", "Xander Schauffele", "Viktor Hovland", "Wyndham Clark", "Justin Rose",
+    "Rory McIlroy", "Tommy Fleetwood", "Chris Gotterup", "Jordan Spieth", "Jon Rahm", "Patrick Reed"
   ];
   const payload = {
-    event: { slug: "scottish-open", currentRound: 2, par: 70 },
+    event: { slug: "the-open", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("scottish-open"));
-  assert.ok(Number.isFinite(result.Sean.total));
-  assert.ok(Number.isFinite(result.Zach.total));
-  assert.equal(result.altRows.length, 2);
-  assert.equal(result.bestBallRows.length, 2);
-});
-
-test("ISCO Championship picks produce both team scores", () => {
-  const names = [
-    "Davis Thompson", "Stephan Jaeger", "Christiaan Bezuidenhout", "Beau Hossler", "Lee Hodges", "Tom Hoge",
-    "Max Homa", "Jackson Koivun", "Ben Kohles", "Denny McCarthy", "Neal Shipley", "Taylor Pendrith"
-  ];
-  const payload = {
-    event: { slug: "isco-championship", currentRound: 2, par: 72 },
-    players: names.map((name, index) => ({ ...player(name, 70 + (index % 4), index % 3), position: index + 1 }))
-  };
-  const result = scoreGame(payload, getTournament("isco-championship"));
+  const result = scoreGame(payload, getTournament("the-open"));
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);

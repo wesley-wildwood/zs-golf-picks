@@ -1,6 +1,6 @@
 # Deploy Golf Picks Live
 
-This package mirrors the Vercel + Supabase deployment pattern used by the other leaderboard build. Vercel serves the static site and `/api/scores`; Supabase stores timestamped score snapshots for each tournament.
+This package mirrors the Vercel + Supabase deployment pattern used by the other leaderboard build. Vercel serves the static site and `/api/scores`; Supabase stores timestamped score snapshots for The Open Championship leaderboard.
 
 ## 1. Download and extract
 
@@ -71,13 +71,12 @@ Apply both variables to **Production**, **Preview**, and **Development**.
 Optional default tournament override:
 
 ```text
-DEFAULT_TOURNAMENT_SLUG=scottish-open
+DEFAULT_TOURNAMENT_SLUG=the-open
 ```
 
-The app already defaults to the Scottish Open, and the browser toggle can request either leaderboard:
+The app already defaults to The Open, and the browser requests:
 
-- `/api/scores?tournament=scottish-open`
-- `/api/scores?tournament=isco-championship`
+- `/api/scores?tournament=the-open`
 
 Environment-variable changes require a new deployment.
 
@@ -90,19 +89,18 @@ Environment-variable changes require a new deployment.
 ## 6. Verify
 
 1. Open the public website in an incognito window.
-2. Toggle between **Scottish Open** and **ISCO**.
-3. Confirm Sean and Zach each have four starters for each tournament.
+2. Confirm the page shows **The Open**.
+3. Confirm Sean and Zach each have four starters.
 4. Confirm the alternate and Best Ball sections show the correct picks.
 5. Confirm the source/status pill changes from **Connecting** to the tournament status.
-6. Visit `https://YOUR-SITE.vercel.app/api/scores?tournament=scottish-open` and confirm JSON loads with `event`, `players`, and `updatedAt`.
-7. Visit `https://YOUR-SITE.vercel.app/api/scores?tournament=isco-championship` and confirm JSON loads.
-8. Confirm the JSON field `snapshotSaved` is `true`.
-9. In Supabase, open **Table Editor -> score_snapshots** and confirm saved rows appear with `event_slug` values.
-10. Ensure Vercel **Deployment Protection** is disabled for Production if everyone should have access.
+6. Visit `https://YOUR-SITE.vercel.app/api/scores?tournament=the-open` and confirm JSON loads with `event`, `players`, and `updatedAt`.
+7. Confirm the JSON field `snapshotSaved` is `true`.
+8. In Supabase, open **Table Editor -> score_snapshots** and confirm saved rows appear with `event_slug` set to `the-open`.
+9. Ensure Vercel **Deployment Protection** is disabled for Production if everyone should have access.
 
 ## Troubleshooting
 
-- **Scores delayed:** Open `/api/scores?tournament=scottish-open` directly, then inspect **Vercel -> Project -> Logs**.
+- **Scores delayed:** Open `/api/scores?tournament=the-open` directly, then inspect **Vercel -> Project -> Logs**.
 - **No Supabase row:** Recheck both environment-variable names and values, then redeploy.
 - **Home page returns 404:** Confirm `public/index.html`, `api`, and `vercel.json` are at the repository root and Root Directory is `./`.
 - **A golfer says Not found:** Check the full spelling in `public/scoring.js` against the `/api/scores` JSON.

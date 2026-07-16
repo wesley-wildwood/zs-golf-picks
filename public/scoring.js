@@ -1,49 +1,28 @@
 export const TOURNAMENTS = {
-  "scottish-open": {
-    slug: "scottish-open",
-    eventId: "401811955",
-    eventName: "Genesis Scottish Open",
-    shortName: "Scottish Open",
-    venue: "The Renaissance Club",
-    location: "North Berwick, Scotland",
+  "the-open": {
+    slug: "the-open",
+    eventId: "401811957",
+    eventName: "The Open",
+    shortName: "The Open",
+    venue: "Royal Birkdale Golf Club",
+    location: "Southport, England",
     par: 70,
     teams: {
       Sean: {
-        starters: ["Rory McIlroy", "Tommy Fleetwood", "Matthew Fitzpatrick", "Ludvig Aberg"],
+        starters: ["Scottie Scheffler", "Matthew Fitzpatrick", "Xander Schauffele", "Viktor Hovland"],
         alt: "Wyndham Clark",
-        bestBall: "Tyrrell Hatton"
+        bestBall: "Justin Rose"
       },
       Zach: {
-        starters: ["Scottie Scheffler", "Xander Schauffele", "Chris Gotterup", "Robert MacIntyre"],
-        alt: "Viktor Hovland",
-        bestBall: "Justin Thomas"
-      }
-    }
-  },
-  "isco-championship": {
-    slug: "isco-championship",
-    eventId: "401811956",
-    eventName: "ISCO Championship",
-    shortName: "ISCO",
-    venue: "Hurstbourne Country Club",
-    location: "Louisville, Kentucky",
-    par: 72,
-    teams: {
-      Sean: {
-        starters: ["Davis Thompson", "Stephan Jaeger", "Christiaan Bezuidenhout", "Beau Hossler"],
-        alt: "Lee Hodges",
-        bestBall: "Tom Hoge"
-      },
-      Zach: {
-        starters: ["Max Homa", "Jackson Koivun", "Ben Kohles", "Denny McCarthy"],
-        alt: "Neal Shipley",
-        bestBall: "Taylor Pendrith"
+        starters: ["Rory McIlroy", "Tommy Fleetwood", "Chris Gotterup", "Jordan Spieth"],
+        alt: "Jon Rahm",
+        bestBall: "Patrick Reed"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "scottish-open";
+export const DEFAULT_TOURNAMENT_SLUG = "the-open";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
