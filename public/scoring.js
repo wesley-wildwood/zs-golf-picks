@@ -1,35 +1,44 @@
 export const TOURNAMENTS = {
-  "the-open": {
-    slug: "the-open",
-    eventId: "401811957",
-    eventName: "The Open",
-    shortName: "The Open",
-    venue: "Royal Birkdale Golf Club",
-    location: "Southport, England",
-    par: 70,
+  "3m-open": {
+    slug: "3m-open",
+    eventId: "401811959",
+    eventName: "3M Open",
+    shortName: "3M Open",
+    venue: "TPC Twin Cities",
+    location: "Blaine, Minnesota",
+    par: 71,
     teams: {
       Sean: {
-        starters: ["Scottie Scheffler", "Matthew Fitzpatrick", "Xander Schauffele", "Viktor Hovland"],
-        alt: "Wyndham Clark",
-        bestBall: "Justin Rose"
+        starters: ["Hideki Matsuyama", "Tom Kim", "Kurt Kitayama", "Jackson Suber"],
+        alt: "Mac Meissner",
+        bestBall: "Jake Knapp"
       },
       Zach: {
-        starters: ["Rory McIlroy", "Tommy Fleetwood", "Chris Gotterup", "Jordan Spieth"],
-        alt: "Jon Rahm",
-        bestBall: "Patrick Reed"
+        starters: ["Scottie Scheffler", "Maverick McNealy", "Pierceson Coody", "Jackson Koivun"],
+        alt: "Max Homa",
+        bestBall: "Sam Stevens"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "the-open";
+export const DEFAULT_TOURNAMENT_SLUG = "3m-open";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
   ["tyrell-hatton", "tyrrell-hatton"],
   ["ludvig-aberg", "ludvig-aberg"],
   ["matthew-fitzpatrick", "matt-fitzpatrick"],
-  ["david-thompson", "davis-thompson"]
+  ["david-thompson", "davis-thompson"],
+  ["hideki-matsuyanma", "hideki-matsuyama"],
+  ["tom-kin", "tom-kim"],
+  ["suber", "jackson-suber"],
+  ["coody", "pierceson-coody"],
+  ["koivun", "jackson-koivun"],
+  ["knapp", "jake-knapp"],
+  ["meissner", "mac-meissner"],
+  ["stevens", "sam-stevens"],
+  ["homa", "max-homa"]
 ]);
 
 export function getTournament(slug) {

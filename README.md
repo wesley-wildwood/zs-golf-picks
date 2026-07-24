@@ -2,7 +2,7 @@
 
 Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
-- `public/`: browser app for this week's Open Championship leaderboard
+- `public/`: browser app for this week's 3M Open leaderboard
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
 - `tests/`: scoring-rule and API checks
@@ -10,20 +10,20 @@ Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
 ## Current Tournament
 
-**The Open**
+**3M Open**
 
-- Event ID: `401811957`
-- Venue: Royal Birkdale Golf Club, Southport, England
-- Par: 70
+- Event ID: `401811959`
+- Venue: TPC Twin Cities, Blaine, Minnesota
+- Par: 71
 
 ## Picks
 
-- Sean starters: Scottie Scheffler, Matthew Fitzpatrick, Xander Schauffele, Viktor Hovland
-- Sean alt: Wyndham Clark
-- Sean Best Ball: Justin Rose
-- Zach starters: Rory McIlroy, Tommy Fleetwood, Chris Gotterup, Jordan Spieth
-- Zach alt: Jon Rahm
-- Zach Best Ball: Patrick Reed
+- Sean starters: Hideki Matsuyama, Tom Kim, Kurt Kitayama, Jackson Suber
+- Sean alt: Mac Meissner
+- Sean Best Ball: Jake Knapp
+- Zach starters: Scottie Scheffler, Maverick McNealy, Pierceson Coody, Jackson Koivun
+- Zach alt: Max Homa
+- Zach Best Ball: Sam Stevens
 
 ## Updating Future Weeks
 
