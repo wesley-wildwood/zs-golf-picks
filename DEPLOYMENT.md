@@ -1,6 +1,6 @@
 # Deploy Golf Picks Live
 
-This package mirrors the Vercel + Supabase deployment pattern used by the other leaderboard build. Vercel serves the static site and `/api/scores`; Supabase stores timestamped score snapshots for the 3M Open leaderboard.
+This package mirrors the Vercel + Supabase deployment pattern used by the other leaderboard build. Vercel serves the static site and `/api/scores`; Supabase stores timestamped score snapshots for the Rocket Classic leaderboard.
 
 ## 1. Download and extract
 
@@ -71,12 +71,12 @@ Apply both variables to **Production**, **Preview**, and **Development**.
 Optional default tournament override:
 
 ```text
-DEFAULT_TOURNAMENT_SLUG=3m-open
+DEFAULT_TOURNAMENT_SLUG=rocket-classic
 ```
 
-The app already defaults to the 3M Open, and the browser requests:
+The app already defaults to the Rocket Classic, and the browser requests:
 
-- `/api/scores?tournament=3m-open`
+- `/api/scores?tournament=rocket-classic`
 
 Environment-variable changes require a new deployment.
 
@@ -89,21 +89,23 @@ Environment-variable changes require a new deployment.
 ## 6. Verify
 
 1. Open the public website in an incognito window.
-2. Confirm the page shows **3M Open**.
+2. Confirm the page shows **Rocket Classic**.
 3. Confirm Sean and Zach each have four starters.
 4. Confirm the alternate and Best Ball sections show the correct picks.
 5. Confirm the source/status pill changes from **Connecting** to the tournament status.
-6. Visit `https://YOUR-SITE.vercel.app/api/scores?tournament=3m-open` and confirm JSON loads with `event`, `players`, and `updatedAt`.
-7. Confirm the JSON field `snapshotSaved` is `true`.
-8. In Supabase, open **Table Editor -> score_snapshots** and confirm saved rows appear with `event_slug` set to `3m-open`.
-9. Ensure Vercel **Deployment Protection** is disabled for Production if everyone should have access.
+6. Visit `https://YOUR-SITE.vercel.app/api/scores?tournament=rocket-classic` and confirm JSON loads with `event`, `players`, and `updatedAt`.
+7. Confirm the JSON has `event.slug` set to `rocket-classic`.
+8. Confirm the JSON field `snapshotSaved` is `true`.
+9. In Supabase, open **Table Editor -> score_snapshots** and confirm saved rows appear with `event_slug` set to `rocket-classic`.
+10. Ensure Vercel **Deployment Protection** is disabled for Production if everyone should have access.
 
 ## Troubleshooting
 
-- **Scores delayed:** Open `/api/scores?tournament=3m-open` directly, then inspect **Vercel -> Project -> Logs**.
+- **Scores delayed:** Open `/api/scores?tournament=rocket-classic` directly, then inspect **Vercel -> Project -> Logs**.
 - **No Supabase row:** Recheck both environment-variable names and values, then redeploy.
 - **Home page returns 404:** Confirm `public/index.html`, `api`, and `vercel.json` are at the repository root and Root Directory is `./`.
 - **A golfer says Not found:** Check the full spelling in `public/scoring.js` against the `/api/scores` JSON.
+- **Wrong ESPN event:** If `/api/scores?tournament=rocket-classic` returns a different tournament, update `eventId` in `public/scoring.js`, commit, and redeploy.
 - **Changes are missing:** Confirm the commit reached `main` and the latest production deployment completed.
 
 The public leaderboard can still display live scores without Supabase. Supabase is used for score history and deployment verification.

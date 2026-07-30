@@ -6,10 +6,10 @@ function player(name, roundOne, roundTwoToPar, status = "playing") {
   return {
     id: name,
     name,
-    tournamentToPar: roundOne - 71 + (roundTwoToPar || 0),
+    tournamentToPar: roundOne - 70 + (roundTwoToPar || 0),
     position: 10,
     rounds: {
-      1: { strokes: roundOne, toPar: roundOne - 71, holes: 18, status: "complete" },
+      1: { strokes: roundOne, toPar: roundOne - 70, holes: 18, status: "complete" },
       2: { strokes: null, toPar: roundTwoToPar, holes: status === "playing" ? 9 : 0, status },
       3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
     }
@@ -59,18 +59,27 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Meissner"), normalizeName("Mac Meissner"));
   assert.equal(normalizeName("Stevens"), normalizeName("Sam Stevens"));
   assert.equal(normalizeName("Homa"), normalizeName("Max Homa"));
+  assert.equal(normalizeName("Gotterup"), normalizeName("Chris Gotterup"));
+  assert.equal(normalizeName("Xander"), normalizeName("Xander Schauffele"));
+  assert.equal(normalizeName("Henley"), normalizeName("Russell Henley"));
+  assert.equal(normalizeName("Cam Young"), normalizeName("Cameron Young"));
+  assert.equal(normalizeName("Hideki"), normalizeName("Hideki Matsuyama"));
+  assert.equal(normalizeName("Spieth"), normalizeName("Jordan Spieth"));
+  assert.equal(normalizeName("Gerard"), normalizeName("Ryan Gerard"));
+  assert.equal(normalizeName("Bridgeman"), normalizeName("Jacob Bridgeman"));
+  assert.equal(normalizeName("Griffin"), normalizeName("Ben Griffin"));
 });
 
-test("3M Open picks produce both team scores", () => {
+test("Rocket Classic picks produce both team scores", () => {
   const names = [
-    "Hideki Matsuyama", "Tom Kim", "Kurt Kitayama", "Jackson Suber", "Mac Meissner", "Jake Knapp",
-    "Scottie Scheffler", "Maverick McNealy", "Pierceson Coody", "Jackson Koivun", "Max Homa", "Sam Stevens"
+    "Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim", "Jacob Bridgeman", "Ryan Gerard",
+    "Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth", "Ben Griffin", "Jake Knapp"
   ];
   const payload = {
-    event: { slug: "3m-open", currentRound: 2, par: 71 },
+    event: { slug: "rocket-classic", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("3m-open"));
+  const result = scoreGame(payload, getTournament("rocket-classic"));
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);

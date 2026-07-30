@@ -1,28 +1,28 @@
 export const TOURNAMENTS = {
-  "3m-open": {
-    slug: "3m-open",
-    eventId: "401811959",
-    eventName: "3M Open",
-    shortName: "3M Open",
-    venue: "TPC Twin Cities",
-    location: "Blaine, Minnesota",
-    par: 71,
+  "rocket-classic": {
+    slug: "rocket-classic",
+    eventId: "401811960",
+    eventName: "Rocket Classic",
+    shortName: "Rocket Classic",
+    venue: "Detroit Golf Club",
+    location: "Detroit, Michigan",
+    par: 70,
     teams: {
       Sean: {
-        starters: ["Hideki Matsuyama", "Tom Kim", "Kurt Kitayama", "Jackson Suber"],
-        alt: "Mac Meissner",
-        bestBall: "Jake Knapp"
+        starters: ["Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim"],
+        alt: "Jacob Bridgeman",
+        bestBall: "Ryan Gerard"
       },
       Zach: {
-        starters: ["Scottie Scheffler", "Maverick McNealy", "Pierceson Coody", "Jackson Koivun"],
-        alt: "Max Homa",
-        bestBall: "Sam Stevens"
+        starters: ["Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth"],
+        alt: "Ben Griffin",
+        bestBall: "Jake Knapp"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "3m-open";
+export const DEFAULT_TOURNAMENT_SLUG = "rocket-classic";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
@@ -38,7 +38,16 @@ const NAME_ALIASES = new Map([
   ["knapp", "jake-knapp"],
   ["meissner", "mac-meissner"],
   ["stevens", "sam-stevens"],
-  ["homa", "max-homa"]
+  ["homa", "max-homa"],
+  ["gotterup", "chris-gotterup"],
+  ["xander", "xander-schauffele"],
+  ["henley", "russell-henley"],
+  ["cam-young", "cameron-young"],
+  ["hideki", "hideki-matsuyama"],
+  ["spieth", "jordan-spieth"],
+  ["gerard", "ryan-gerard"],
+  ["bridgeman", "jacob-bridgeman"],
+  ["griffin", "ben-griffin"]
 ]);
 
 export function getTournament(slug) {

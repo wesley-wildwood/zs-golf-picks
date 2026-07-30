@@ -2,7 +2,7 @@
 
 Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
-- `public/`: browser app for this week's 3M Open leaderboard
+- `public/`: browser app for this week's Rocket Classic leaderboard
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
 - `tests/`: scoring-rule and API checks
@@ -10,20 +10,20 @@ Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
 ## Current Tournament
 
-**3M Open**
+**Rocket Classic**
 
-- Event ID: `401811959`
-- Venue: TPC Twin Cities, Blaine, Minnesota
-- Par: 71
+- Event ID: `401811960`
+- Venue: Detroit Golf Club, Detroit, Michigan
+- Par: 70
 
 ## Picks
 
-- Sean starters: Hideki Matsuyama, Tom Kim, Kurt Kitayama, Jackson Suber
-- Sean alt: Mac Meissner
-- Sean Best Ball: Jake Knapp
-- Zach starters: Scottie Scheffler, Maverick McNealy, Pierceson Coody, Jackson Koivun
-- Zach alt: Max Homa
-- Zach Best Ball: Sam Stevens
+- Sean starters: Chris Gotterup, Xander Schauffele, Russell Henley, Si Woo Kim
+- Sean alt: Jacob Bridgeman
+- Sean Best Ball: Ryan Gerard
+- Zach starters: Cameron Young, Jackson Koivun, Hideki Matsuyama, Jordan Spieth
+- Zach alt: Ben Griffin
+- Zach Best Ball: Jake Knapp
 
 ## Updating Future Weeks
 
