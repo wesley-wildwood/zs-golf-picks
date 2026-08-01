@@ -1,37 +1,18 @@
-# Golf Picks Live
+# U.S. Open Golf Picks Live
 
-Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
+Deployment-ready static leaderboard for Sean and Zach's 2026 U.S. Open picks game.
 
-- `public/`: browser app for this week's Rocket Classic leaderboard
+- `public/`: browser application
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
-- `tests/`: scoring-rule and API checks
+- `tests/`: scoring-rule verification
 - `DEPLOYMENT.md`: complete GitHub, Supabase, and Vercel instructions
-
-## Current Tournament
-
-**Rocket Classic**
-
-- Event ID: `401811960`
-- Venue: Detroit Golf Club, Detroit, Michigan
-- Par: 70
 
 ## Picks
 
-- Sean starters: Chris Gotterup, Xander Schauffele, Russell Henley, Si Woo Kim
-- Sean alt: Jacob Bridgeman
-- Sean Best Ball: Ryan Gerard
-- Zach starters: Cameron Young, Jackson Koivun, Hideki Matsuyama, Jordan Spieth
-- Zach alt: Ben Griffin
-- Zach Best Ball: Jake Knapp
+**Sean:** Xander Schauffele, Matt Fitzpatrick, Cameron Young, Jon Rahm. Alt: Patrick Reed. Best Ball: Sam Burns.
 
-## Updating Future Weeks
-
-Edit `public/scoring.js`:
-
-1. Replace the tournament in `TOURNAMENTS`.
-2. Set the ESPN `eventId`, event name, venue, par, and picks.
-3. Add simple spelling aliases in `NAME_ALIASES` if a pick may differ from ESPN's spelling.
+**Zach:** Scottie Scheffler, Rory McIlroy, Tommy Fleetwood, Jordan Spieth. Alt: Russell Henley. Best Ball: Brooks Koepka.
 
 ## Local check
 

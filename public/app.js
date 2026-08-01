@@ -1,13 +1,7 @@
-import { DEFAULT_TOURNAMENT_SLUG, TOURNAMENTS, getTournament, scoreGame } from "./scoring.js";
+import { scoreGame } from "./scoring.js";
 
 const REFRESH_MS = 60_000;
-const savedSlug = window.localStorage.getItem("golf-picks:tournament");
-let activeSlug = TOURNAMENTS[savedSlug] ? savedSlug : DEFAULT_TOURNAMENT_SLUG;
-
 const elements = {
-  title: document.querySelector("#event-title"),
-  subtitle: document.querySelector("#event-subtitle"),
-  tournamentTabs: document.querySelector("#tournament-tabs"),
   sourcePill: document.querySelector("#source-pill"),
   sourceLabel: document.querySelector("#source-label"),
   refreshButton: document.querySelector("#refresh-button"),
@@ -15,20 +9,16 @@ const elements = {
 };
 
 elements.refreshButton.addEventListener("click", loadScores);
-renderTournamentTabs();
 loadScores();
 window.setInterval(loadScores, REFRESH_MS);
 
 async function loadScores() {
-  const tournament = getTournament(activeSlug);
   setLoading(true);
-  updateHeading(tournament);
-
   try {
-    const response = await fetch(`/api/scores?tournament=${encodeURIComponent(tournament.slug)}`, { cache: "no-store" });
+    const response = await fetch("/api/scores", { cache: "no-store" });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.detail || payload.error || `Request failed (${response.status})`);
-    render(payload, scoreGame(payload, tournament), tournament);
+    render(payload, scoreGame(payload));
     elements.errorBanner.hidden = true;
     elements.sourcePill.className = "source-pill live";
     elements.sourceLabel.textContent = payload.event.status || "Live scores";
@@ -42,55 +32,12 @@ async function loadScores() {
   }
 }
 
-function renderTournamentTabs() {
-  elements.tournamentTabs.innerHTML = Object.values(TOURNAMENTS).map((tournament) => `
-    <button
-      type="button"
-      class="tournament-tab ${tournament.slug === activeSlug ? "active" : ""}"
-      data-slug="${escapeHtml(tournament.slug)}"
-      aria-pressed="${tournament.slug === activeSlug ? "true" : "false"}"
-    >
-      <span>${escapeHtml(tournament.shortName)}</span>
-    </button>
-  `).join("");
-
-  for (const button of elements.tournamentTabs.querySelectorAll("button")) {
-    button.addEventListener("click", () => {
-      activeSlug = button.dataset.slug;
-      window.localStorage.setItem("golf-picks:tournament", activeSlug);
-      renderTournamentTabs();
-      clearScores();
-      loadScores();
-    });
-  }
-}
-
-function updateHeading(tournament) {
-  elements.title.textContent = tournament.eventName;
-  elements.subtitle.textContent = `${tournament.venue} · ${tournament.location}`;
-}
-
-function clearScores() {
-  document.querySelector("#sean-total").textContent = "...";
-  document.querySelector("#zach-total").textContent = "...";
-  document.querySelector("#sean-match").textContent = "Waiting";
-  document.querySelector("#zach-match").textContent = "Waiting";
-  document.querySelector("#leader-text").textContent = "Waiting for live scores";
-  document.querySelector("#updated-at").textContent = "Not updated yet";
-  document.querySelector("#sean-rounds").innerHTML = "";
-  document.querySelector("#zach-rounds").innerHTML = "";
-  document.querySelector("#sean-team").innerHTML = "";
-  document.querySelector("#zach-team").innerHTML = "";
-  document.querySelector("#alt-table").innerHTML = "";
-  document.querySelector("#best-ball-table").innerHTML = "";
-}
-
-function render(payload, game, tournament) {
+function render(payload, game) {
   renderScoreCard("sean", game.Sean, game.Zach);
   renderScoreCard("zach", game.Zach, game.Sean);
   document.querySelector("#leader-text").textContent = game.leaderText;
   document.querySelector("#updated-at").textContent = `Updated ${formatTime(payload.updatedAt)}`;
-  document.querySelector("#event-meta").textContent = `Round ${payload.event.currentRound} · Par ${payload.event.par || tournament.par} · Auto-refreshes every 60 seconds`;
+  document.querySelector("#event-meta").textContent = `Round ${payload.event.currentRound} · Par ${payload.event.par} · Auto-refreshes every 60 seconds`;
   renderTeam("#sean-team", game.Sean);
   renderTeam("#zach-team", game.Zach);
   renderSideRows("#alt-table", game.altRows, false);

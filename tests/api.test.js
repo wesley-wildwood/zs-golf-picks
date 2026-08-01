@@ -4,21 +4,18 @@ import scoresHandler from "../api/scores.js";
 
 test("scores API shapes the live feed for the browser", async () => {
   const originalFetch = globalThis.fetch;
-  let fetchedUrl = "";
-  globalThis.fetch = async (url) => {
-    fetchedUrl = String(url);
-    return new Response(JSON.stringify({
+  globalThis.fetch = async () => new Response(JSON.stringify({
     events: [{
-      id: "401811960",
-      name: "Rocket Classic",
-      date: "2026-07-30T04:00Z",
-      endDate: "2026-08-02T04:00Z",
+      id: "401811952",
+      name: "U.S. Open",
+      date: "2026-06-18T04:00Z",
+      endDate: "2026-06-21T04:00Z",
       competitions: [{
         competitors: [{
           id: "10140",
           order: 2,
           score: "-3",
-          athlete: { displayName: "Scottie Scheffler", shortName: "S. Scheffler" },
+          athlete: { displayName: "Xander Schauffele", shortName: "X. Schauffele" },
           linescores: [
             { period: 1, value: 71, displayValue: "+1", linescores: Array.from({ length: 18 }, () => ({ value: 4 })) },
             { period: 2, value: 32, displayValue: "-4", linescores: Array.from({ length: 9 }, () => ({ value: 4 })) }
@@ -27,7 +24,6 @@ test("scores API shapes the live feed for the browser", async () => {
       }]
     }]
   }), { status: 200, headers: { "Content-Type": "application/json" } });
-  };
 
   let statusCode = 200;
   let body;
@@ -37,17 +33,15 @@ test("scores API shapes the live feed for the browser", async () => {
   };
 
   try {
-    await scoresHandler({ method: "GET", url: "/api/scores?tournament=rocket-classic", headers: { host: "example.test" } }, response);
+    await scoresHandler({ method: "GET" }, response);
   } finally {
     globalThis.fetch = originalFetch;
   }
 
   assert.equal(statusCode, 200);
-  assert.ok(fetchedUrl.includes("event=401811960"));
-  assert.equal(body.event.id, "401811960");
-  assert.equal(body.event.slug, "rocket-classic");
+  assert.equal(body.event.id, "401811952");
   assert.equal(body.event.currentRound, 2);
-  assert.equal(body.players[0].name, "Scottie Scheffler");
+  assert.equal(body.players[0].name, "Xander Schauffele");
   assert.equal(body.players[0].rounds[2].status, "playing");
   assert.equal(body.snapshotSaved, false);
 });

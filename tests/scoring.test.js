@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { getTournament, normalizeName, projectedRoundScore, scoreGame, scoreTeam } from "../public/scoring.js";
+import { normalizeName, projectedRoundScore, scoreGame, scoreTeam } from "../public/scoring.js";
 
 function player(name, roundOne, roundTwoToPar, status = "playing") {
   return {
@@ -46,40 +46,16 @@ test("Nordic characters normalize consistently", () => {
   assert.equal(normalizeName("Nicolai Højgaard"), normalizeName("Nicolai Hojgaard"));
 });
 
-test("name aliases cover weekly pick spelling variations", () => {
-  assert.equal(normalizeName("Rober MacIntyre"), normalizeName("Robert MacIntyre"));
-  assert.equal(normalizeName("Tyrell Hatton"), normalizeName("Tyrrell Hatton"));
-  assert.equal(normalizeName("Ludvig Åberg"), normalizeName("Ludvig Aberg"));
-  assert.equal(normalizeName("David Thompson"), normalizeName("Davis Thompson"));
-  assert.equal(normalizeName("Hideki Matsuyanma"), normalizeName("Hideki Matsuyama"));
-  assert.equal(normalizeName("Tom Kin"), normalizeName("Tom Kim"));
-  assert.equal(normalizeName("Suber"), normalizeName("Jackson Suber"));
-  assert.equal(normalizeName("Coody"), normalizeName("Pierceson Coody"));
-  assert.equal(normalizeName("Knapp"), normalizeName("Jake Knapp"));
-  assert.equal(normalizeName("Meissner"), normalizeName("Mac Meissner"));
-  assert.equal(normalizeName("Stevens"), normalizeName("Sam Stevens"));
-  assert.equal(normalizeName("Homa"), normalizeName("Max Homa"));
-  assert.equal(normalizeName("Gotterup"), normalizeName("Chris Gotterup"));
-  assert.equal(normalizeName("Xander"), normalizeName("Xander Schauffele"));
-  assert.equal(normalizeName("Henley"), normalizeName("Russell Henley"));
-  assert.equal(normalizeName("Cam Young"), normalizeName("Cameron Young"));
-  assert.equal(normalizeName("Hideki"), normalizeName("Hideki Matsuyama"));
-  assert.equal(normalizeName("Spieth"), normalizeName("Jordan Spieth"));
-  assert.equal(normalizeName("Gerard"), normalizeName("Ryan Gerard"));
-  assert.equal(normalizeName("Bridgeman"), normalizeName("Jacob Bridgeman"));
-  assert.equal(normalizeName("Griffin"), normalizeName("Ben Griffin"));
-});
-
-test("Rocket Classic picks produce both team scores", () => {
+test("U.S. Open picks produce both team scores", () => {
   const names = [
-    "Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim", "Jacob Bridgeman", "Ryan Gerard",
-    "Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth", "Ben Griffin", "Jake Knapp"
+    "Xander Schauffele", "Matt Fitzpatrick", "Cameron Young", "Jon Rahm", "Patrick Reed", "Sam Burns",
+    "Scottie Scheffler", "Rory McIlroy", "Tommy Fleetwood", "Jordan Spieth", "Russell Henley", "Brooks Koepka"
   ];
   const payload = {
-    event: { slug: "rocket-classic", currentRound: 2, par: 70 },
+    event: { currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("rocket-classic"));
+  const result = scoreGame(payload);
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);

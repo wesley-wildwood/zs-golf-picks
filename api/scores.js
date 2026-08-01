@@ -1,4 +1,5 @@
-import { DEFAULT_TOURNAMENT_SLUG, getTournament } from "../public/scoring.js";
+const EVENT_ID = process.env.ESPN_EVENT_ID || "401811952";
+const ESPN_URL = `https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=${EVENT_ID}`;
 
 function parseToPar(value) {
   if (value === "E") return 0;
@@ -74,7 +75,6 @@ async function saveSnapshot(payload) {
     },
     body: JSON.stringify({
       event_id: payload.event.id,
-      event_slug: payload.event.slug,
       event_status: payload.event.status,
       round_number: payload.event.currentRound,
       captured_minute: capturedMinute.toISOString(),
@@ -88,40 +88,27 @@ async function saveSnapshot(payload) {
   return true;
 }
 
-function tournamentFromRequest(request) {
-  const host = request.headers.host || "localhost";
-  const url = new URL(request.url || "/", `https://${host}`);
-  const slug = url.searchParams.get("tournament") || process.env.DEFAULT_TOURNAMENT_SLUG || DEFAULT_TOURNAMENT_SLUG;
-  return getTournament(slug);
-}
-
 export default async function handler(request, response) {
   if (request.method !== "GET") {
     return response.status(405).json({ error: "Method not allowed" });
   }
 
-  const tournament = tournamentFromRequest(request);
-  const espnUrl = `https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard?event=${tournament.eventId}`;
-
   try {
-    const upstream = await fetch(espnUrl, { headers: { Accept: "application/json" } });
+    const upstream = await fetch(ESPN_URL, { headers: { Accept: "application/json" } });
     if (!upstream.ok) throw new Error(`Live feed returned ${upstream.status}`);
     const data = await upstream.json();
-    const event = data.events?.find((item) => item.id === tournament.eventId) || data.events?.[0];
+    const event = data.events?.find((item) => item.id === EVENT_ID) || data.events?.[0];
     const competition = event?.competitions?.[0];
-    if (!event || !competition) throw new Error(`${tournament.eventName} event was not found`);
+    if (!event || !competition) throw new Error("U.S. Open event was not found");
 
     const competitors = competition.competitors || [];
     const currentRound = inferCurrentRound(competitors);
     const payload = {
       event: {
         id: event.id,
-        slug: tournament.slug,
-        name: event.name || tournament.eventName,
-        shortName: tournament.shortName,
-        venue: tournament.venue,
-        location: tournament.location,
-        par: tournament.par,
+        name: event.name || "U.S. Open",
+        venue: "Shinnecock Hills Golf Club",
+        par: 70,
         status: competition.status?.type?.description || event.status?.type?.description || "In progress",
         statusDetail: competition.status?.type?.detail || null,
         currentRound,

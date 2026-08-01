@@ -1,61 +1,24 @@
-export const TOURNAMENTS = {
-  "rocket-classic": {
-    slug: "rocket-classic",
-    eventId: "401811960",
-    eventName: "Rocket Classic",
-    shortName: "Rocket Classic",
-    venue: "Detroit Golf Club",
-    location: "Detroit, Michigan",
-    par: 70,
-    teams: {
-      Sean: {
-        starters: ["Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim"],
-        alt: "Jacob Bridgeman",
-        bestBall: "Ryan Gerard"
-      },
-      Zach: {
-        starters: ["Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth"],
-        alt: "Ben Griffin",
-        bestBall: "Jake Knapp"
-      }
+export const COURSE_PAR = 70;
+
+export const GAME = {
+  eventId: "401811952",
+  eventName: "U.S. Open",
+  teams: {
+    Sean: {
+      starters: ["Xander Schauffele", "Matt Fitzpatrick", "Cameron Young", "Jon Rahm"],
+      alt: "Patrick Reed",
+      bestBall: "Sam Burns"
+    },
+    Zach: {
+      starters: ["Scottie Scheffler", "Rory McIlroy", "Tommy Fleetwood", "Jordan Spieth"],
+      alt: "Russell Henley",
+      bestBall: "Brooks Koepka"
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "rocket-classic";
-
-const NAME_ALIASES = new Map([
-  ["rober-macintyre", "robert-macintyre"],
-  ["tyrell-hatton", "tyrrell-hatton"],
-  ["ludvig-aberg", "ludvig-aberg"],
-  ["matthew-fitzpatrick", "matt-fitzpatrick"],
-  ["david-thompson", "davis-thompson"],
-  ["hideki-matsuyanma", "hideki-matsuyama"],
-  ["tom-kin", "tom-kim"],
-  ["suber", "jackson-suber"],
-  ["coody", "pierceson-coody"],
-  ["koivun", "jackson-koivun"],
-  ["knapp", "jake-knapp"],
-  ["meissner", "mac-meissner"],
-  ["stevens", "sam-stevens"],
-  ["homa", "max-homa"],
-  ["gotterup", "chris-gotterup"],
-  ["xander", "xander-schauffele"],
-  ["henley", "russell-henley"],
-  ["cam-young", "cameron-young"],
-  ["hideki", "hideki-matsuyama"],
-  ["spieth", "jordan-spieth"],
-  ["gerard", "ryan-gerard"],
-  ["bridgeman", "jacob-bridgeman"],
-  ["griffin", "ben-griffin"]
-]);
-
-export function getTournament(slug) {
-  return TOURNAMENTS[slug] || TOURNAMENTS[DEFAULT_TOURNAMENT_SLUG];
-}
-
 export function normalizeName(value) {
-  const normalized = String(value || "")
+  return String(value || "")
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[øöóòôõ]/g, "o")
@@ -70,8 +33,6 @@ export function normalizeName(value) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-
-  return NAME_ALIASES.get(normalized) || normalized;
 }
 
 export function findPlayer(players, name) {
@@ -79,7 +40,7 @@ export function findPlayer(players, name) {
   return players.find((player) => normalizeName(player.name) === key) || null;
 }
 
-export function projectedRoundScore(round, roundNumber, currentRound, coursePar) {
+export function projectedRoundScore(round, roundNumber, currentRound, coursePar = COURSE_PAR) {
   if (!round || roundNumber > currentRound) return null;
   if (round.status === "complete" && Number.isFinite(round.strokes)) return round.strokes;
   if (round.status === "playing" && Number.isFinite(round.toPar)) return coursePar + round.toPar;
@@ -87,7 +48,7 @@ export function projectedRoundScore(round, roundNumber, currentRound, coursePar)
   return null;
 }
 
-export function scoreGolfer(player, currentRound, coursePar) {
+export function scoreGolfer(player, currentRound, coursePar = COURSE_PAR) {
   if (!player) {
     return {
       found: false,
@@ -119,7 +80,7 @@ export function scoreGolfer(player, currentRound, coursePar) {
   };
 }
 
-export function scoreTeam(starterNames, players, currentRound, coursePar) {
+export function scoreTeam(starterNames, players, currentRound, coursePar = COURSE_PAR) {
   const golfers = starterNames.map((name) => {
     const scored = scoreGolfer(findPlayer(players, name), currentRound, coursePar);
     return { ...scored, name };
@@ -145,21 +106,21 @@ export function scoreTeam(starterNames, players, currentRound, coursePar) {
   };
 }
 
-export function scoreGame(payload, tournament = getTournament(payload.event?.slug)) {
+export function scoreGame(payload, game = GAME) {
   const currentRound = Math.min(4, Math.max(1, payload.event?.currentRound || 1));
-  const coursePar = payload.event?.par || tournament.par;
+  const coursePar = payload.event?.par || COURSE_PAR;
   const players = payload.players || [];
-  const Sean = scoreTeam(tournament.teams.Sean.starters, players, currentRound, coursePar);
-  const Zach = scoreTeam(tournament.teams.Zach.starters, players, currentRound, coursePar);
+  const Sean = scoreTeam(game.teams.Sean.starters, players, currentRound, coursePar);
+  const Zach = scoreTeam(game.teams.Zach.starters, players, currentRound, coursePar);
   const altRows = ["Sean", "Zach"].map((owner) => ({
     owner,
-    ...scoreGolfer(findPlayer(players, tournament.teams[owner].alt), currentRound, coursePar),
-    name: tournament.teams[owner].alt
+    ...scoreGolfer(findPlayer(players, game.teams[owner].alt), currentRound, coursePar),
+    name: game.teams[owner].alt
   }));
   const bestBallRows = ["Sean", "Zach"].map((owner) => ({
     owner,
-    ...scoreGolfer(findPlayer(players, tournament.teams[owner].bestBall), currentRound, coursePar),
-    name: tournament.teams[owner].bestBall
+    ...scoreGolfer(findPlayer(players, game.teams[owner].bestBall), currentRound, coursePar),
+    name: game.teams[owner].bestBall
   }));
 
   return {
@@ -169,7 +130,7 @@ export function scoreGame(payload, tournament = getTournament(payload.event?.slu
     altRows,
     altText: alternateText(altRows),
     bestBallRows,
-    bestBallText: bestBallText(bestBallRows, tournament.shortName)
+    bestBallText: bestBallText(bestBallRows)
   };
 }
 
@@ -187,8 +148,8 @@ function alternateText(rows) {
   return `${rows[difference < 0 ? 0 : 1].owner} leads the alternate match by ${Math.abs(difference)}.`;
 }
 
-function bestBallText(rows, eventName) {
+function bestBallText(rows) {
   const leaders = rows.filter((row) => Number(row.position) === 1);
-  if (!leaders.length) return `No Best Ball pick currently leads the ${eventName}.`;
+  if (!leaders.length) return "No Best Ball pick currently leads the U.S. Open.";
   return `${leaders.map((row) => row.owner).join(" and ")} currently has a winning Best Ball pick.`;
 }
