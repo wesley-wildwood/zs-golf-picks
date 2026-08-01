@@ -1,24 +1,61 @@
-export const COURSE_PAR = 70;
-
-export const GAME = {
-  eventId: "401811952",
-  eventName: "U.S. Open",
-  teams: {
-    Sean: {
-      starters: ["Xander Schauffele", "Matt Fitzpatrick", "Cameron Young", "Jon Rahm"],
-      alt: "Patrick Reed",
-      bestBall: "Sam Burns"
-    },
-    Zach: {
-      starters: ["Scottie Scheffler", "Rory McIlroy", "Tommy Fleetwood", "Jordan Spieth"],
-      alt: "Russell Henley",
-      bestBall: "Brooks Koepka"
+export const TOURNAMENTS = {
+  "rocket-classic": {
+    slug: "rocket-classic",
+    eventId: "401811960",
+    eventName: "Rocket Mortgage Classic",
+    shortName: "Rocket Mortgage",
+    venue: "Detroit Golf Club",
+    location: "Detroit, Michigan",
+    par: 70,
+    teams: {
+      Sean: {
+        starters: ["Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim"],
+        alt: "Jacob Bridgeman",
+        bestBall: "Ryan Gerard"
+      },
+      Zach: {
+        starters: ["Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth"],
+        alt: "Ben Griffin",
+        bestBall: "Jake Knapp"
+      }
     }
   }
 };
 
+export const DEFAULT_TOURNAMENT_SLUG = "rocket-classic";
+
+const NAME_ALIASES = new Map([
+  ["rober-macintyre", "robert-macintyre"],
+  ["tyrell-hatton", "tyrrell-hatton"],
+  ["ludvig-aberg", "ludvig-aberg"],
+  ["matthew-fitzpatrick", "matt-fitzpatrick"],
+  ["david-thompson", "davis-thompson"],
+  ["hideki-matsuyanma", "hideki-matsuyama"],
+  ["tom-kin", "tom-kim"],
+  ["suber", "jackson-suber"],
+  ["coody", "pierceson-coody"],
+  ["koivun", "jackson-koivun"],
+  ["knapp", "jake-knapp"],
+  ["meissner", "mac-meissner"],
+  ["stevens", "sam-stevens"],
+  ["homa", "max-homa"],
+  ["gotterup", "chris-gotterup"],
+  ["xander", "xander-schauffele"],
+  ["henley", "russell-henley"],
+  ["cam-young", "cameron-young"],
+  ["hideki", "hideki-matsuyama"],
+  ["spieth", "jordan-spieth"],
+  ["gerard", "ryan-gerard"],
+  ["bridgeman", "jacob-bridgeman"],
+  ["griffin", "ben-griffin"]
+]);
+
+export function getTournament(slug) {
+  return TOURNAMENTS[slug] || TOURNAMENTS[DEFAULT_TOURNAMENT_SLUG];
+}
+
 export function normalizeName(value) {
-  return String(value || "")
+  const normalized = String(value || "")
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[øöóòôõ]/g, "o")
@@ -33,6 +70,8 @@ export function normalizeName(value) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
+
+  return NAME_ALIASES.get(normalized) || normalized;
 }
 
 export function findPlayer(players, name) {
@@ -40,7 +79,7 @@ export function findPlayer(players, name) {
   return players.find((player) => normalizeName(player.name) === key) || null;
 }
 
-export function projectedRoundScore(round, roundNumber, currentRound, coursePar = COURSE_PAR) {
+export function projectedRoundScore(round, roundNumber, currentRound, coursePar) {
   if (!round || roundNumber > currentRound) return null;
   if (round.status === "complete" && Number.isFinite(round.strokes)) return round.strokes;
   if (round.status === "playing" && Number.isFinite(round.toPar)) return coursePar + round.toPar;
@@ -48,13 +87,14 @@ export function projectedRoundScore(round, roundNumber, currentRound, coursePar 
   return null;
 }
 
-export function scoreGolfer(player, currentRound, coursePar = COURSE_PAR) {
+export function scoreGolfer(player, currentRound, coursePar) {
   if (!player) {
     return {
       found: false,
       name: "Not found",
       status: "missing",
       holes: 0,
+      missedCut: false,
       tournamentToPar: null,
       position: null,
       rounds: [null, null, null, null],
@@ -63,7 +103,9 @@ export function scoreGolfer(player, currentRound, coursePar = COURSE_PAR) {
   }
 
   const rounds = [1, 2, 3, 4].map((roundNumber) =>
-    projectedRoundScore(player.rounds?.[roundNumber], roundNumber, currentRound, coursePar)
+    player.missedCut && roundNumber >= currentRound && player.rounds?.[roundNumber]?.status === "not_started"
+      ? null
+      : projectedRoundScore(player.rounds?.[roundNumber], roundNumber, currentRound, coursePar)
   );
   const current = player.rounds?.[currentRound];
   const completed = [...Array(currentRound)].map((_, index) => player.rounds?.[index + 1]).filter(Boolean);
@@ -73,14 +115,14 @@ export function scoreGolfer(player, currentRound, coursePar = COURSE_PAR) {
   return {
     found: true,
     ...player,
-    status: latest?.status || "not_started",
+    status: player.missedCut && latest?.status !== "playing" ? "missed_cut" : latest?.status || "not_started",
     holes: latest?.holes || 0,
     rounds,
     total: rounds.some(Number.isFinite) ? total : null
   };
 }
 
-export function scoreTeam(starterNames, players, currentRound, coursePar = COURSE_PAR) {
+export function scoreTeam(starterNames, players, currentRound, coursePar) {
   const golfers = starterNames.map((name) => {
     const scored = scoreGolfer(findPlayer(players, name), currentRound, coursePar);
     return { ...scored, name };
@@ -99,28 +141,31 @@ export function scoreTeam(starterNames, players, currentRound, coursePar = COURS
   });
 
   const total = rounds.filter((round) => Number.isFinite(round.total)).reduce((sum, round) => sum + round.total, 0);
+  const countedRounds = rounds.filter((round) => Number.isFinite(round.total)).length;
+  const toPar = Number.isFinite(total) && countedRounds > 0 ? total - countedRounds * 2 * coursePar : null;
   return {
     golfers,
     rounds,
-    total: rounds.some((round) => Number.isFinite(round.total)) ? total : null
+    total: rounds.some((round) => Number.isFinite(round.total)) ? total : null,
+    toPar
   };
 }
 
-export function scoreGame(payload, game = GAME) {
+export function scoreGame(payload, tournament = getTournament(payload.event?.slug)) {
   const currentRound = Math.min(4, Math.max(1, payload.event?.currentRound || 1));
-  const coursePar = payload.event?.par || COURSE_PAR;
+  const coursePar = payload.event?.par || tournament.par;
   const players = payload.players || [];
-  const Sean = scoreTeam(game.teams.Sean.starters, players, currentRound, coursePar);
-  const Zach = scoreTeam(game.teams.Zach.starters, players, currentRound, coursePar);
+  const Sean = scoreTeam(tournament.teams.Sean.starters, players, currentRound, coursePar);
+  const Zach = scoreTeam(tournament.teams.Zach.starters, players, currentRound, coursePar);
   const altRows = ["Sean", "Zach"].map((owner) => ({
     owner,
-    ...scoreGolfer(findPlayer(players, game.teams[owner].alt), currentRound, coursePar),
-    name: game.teams[owner].alt
+    ...scoreGolfer(findPlayer(players, tournament.teams[owner].alt), currentRound, coursePar),
+    name: tournament.teams[owner].alt
   }));
   const bestBallRows = ["Sean", "Zach"].map((owner) => ({
     owner,
-    ...scoreGolfer(findPlayer(players, game.teams[owner].bestBall), currentRound, coursePar),
-    name: game.teams[owner].bestBall
+    ...scoreGolfer(findPlayer(players, tournament.teams[owner].bestBall), currentRound, coursePar),
+    name: tournament.teams[owner].bestBall
   }));
 
   return {
@@ -130,7 +175,7 @@ export function scoreGame(payload, game = GAME) {
     altRows,
     altText: alternateText(altRows),
     bestBallRows,
-    bestBallText: bestBallText(bestBallRows)
+    bestBallText: bestBallText(bestBallRows, tournament.shortName)
   };
 }
 
@@ -148,8 +193,8 @@ function alternateText(rows) {
   return `${rows[difference < 0 ? 0 : 1].owner} leads the alternate match by ${Math.abs(difference)}.`;
 }
 
-function bestBallText(rows) {
+function bestBallText(rows, eventName) {
   const leaders = rows.filter((row) => Number(row.position) === 1);
-  if (!leaders.length) return "No Best Ball pick currently leads the U.S. Open.";
+  if (!leaders.length) return `No Best Ball pick currently leads the ${eventName}.`;
   return `${leaders.map((row) => row.owner).join(" and ")} currently has a winning Best Ball pick.`;
 }

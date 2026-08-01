@@ -20,7 +20,7 @@ button { font: inherit; }
 body {
   background:
     linear-gradient(120deg, rgba(15, 93, 74, 0.08), transparent 30%),
-    linear-gradient(270deg, rgba(177, 44, 44, 0.07), transparent 28%),
+    linear-gradient(270deg, rgba(47, 90, 132, 0.07), transparent 28%),
     #f5f4ef;
 }
 
@@ -63,6 +63,33 @@ h2 { margin-bottom: 0; font-size: 1.15rem; }
 .source-pill.live .pulse { background: #1c9b59; box-shadow: 0 0 0 5px rgba(28, 155, 89, 0.12); }
 .source-pill.delayed { border-color: #d69b83; color: #963d20; }
 .source-pill.delayed .pulse { background: #c95933; }
+
+.tournament-tabs {
+  display: inline-flex;
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 5px;
+  border: 1px solid #d7ddd7;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.tournament-tab {
+  min-height: 38px;
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  color: #51635a;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.tournament-tab.active {
+  background: #0f5d4a;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(15, 93, 74, 0.18);
+}
 
 .score-grid {
   display: grid;
@@ -113,6 +140,7 @@ th { color: #60736b; font-size: 0.75rem; text-transform: uppercase; }
 .status.playing { background: #e5f4eb; color: #0f6b3d; }
 .status.complete { background: #e9eff9; color: #294b86; }
 .status.missing { background: #f8e9e1; color: #9a3e20; }
+.status.missed_cut { background: #f7e8df; color: #8d3a20; }
 .verdict { margin: 12px 0 0; color: #26352f; font-weight: 850; }
 .error-banner { margin-top: 14px; border: 1px solid #d89c84; border-radius: 7px; padding: 11px 12px; background: #fff0e9; color: #8f3518; font-weight: 700; }
 
@@ -123,6 +151,7 @@ th { color: #60736b; font-size: 0.75rem; text-transform: uppercase; }
 @media (max-width: 720px) {
   .shell { padding: 14px; }
   .topbar, .refresh-row { align-items: stretch; flex-direction: column; }
+  .tournament-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .table-wrap { overflow-x: auto; }
-  table { min-width: 620px; white-space: nowrap; }
+  table { min-width: 680px; white-space: nowrap; }
 }
