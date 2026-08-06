@@ -45,10 +45,10 @@ test("future placeholder rounds never create phantom scores", () => {
 
 test("missed-cut golfers render as missed cut instead of not started", () => {
   const result = scoreGame({
-    event: { slug: "rocket-classic", currentRound: 3, par: 70 },
+    event: { slug: "wyndham-championship", currentRound: 3, par: 70 },
     players: [{
-      id: "jacob-bridgeman",
-      name: "Jacob Bridgeman",
+      id: "michael-kim",
+      name: "Michael Kim",
       missedCut: true,
       tournamentToPar: 2,
       position: null,
@@ -58,7 +58,7 @@ test("missed-cut golfers render as missed cut instead of not started", () => {
         3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
       }
     }]
-  }, getTournament("rocket-classic"));
+  }, getTournament("wyndham-championship"));
 
   assert.equal(result.altRows[0].status, "missed_cut");
   assert.equal(result.altRows[0].rounds[2], null);
@@ -91,18 +91,22 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Gerard"), normalizeName("Ryan Gerard"));
   assert.equal(normalizeName("Bridgeman"), normalizeName("Jacob Bridgeman"));
   assert.equal(normalizeName("Griffin"), normalizeName("Ben Griffin"));
+  assert.equal(normalizeName("Rai"), normalizeName("Aaron Rai"));
+  assert.equal(normalizeName("Fitzpatrick"), normalizeName("Alex Fitzpatrick"));
+  assert.equal(normalizeName("Maverick"), normalizeName("Maverick McNealy"));
+  assert.equal(normalizeName("Harman"), normalizeName("Brian Harman"));
 });
 
-test("Rocket Mortgage Classic picks produce both team scores", () => {
+test("Wyndham Championship picks produce both team scores", () => {
   const names = [
-    "Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim", "Jacob Bridgeman", "Ryan Gerard",
-    "Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth", "Ben Griffin", "Jake Knapp"
+    "Jackson Koivun", "Ryan Gerard", "Aaron Rai", "Ben Griffin", "Michael Kim", "Tom Kim",
+    "Cameron Young", "Hideki Matsuyama", "Alex Fitzpatrick", "Jordan Spieth", "Brian Harman", "Maverick McNealy"
   ];
   const payload = {
-    event: { slug: "rocket-classic", currentRound: 2, par: 70 },
+    event: { slug: "wyndham-championship", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("rocket-classic"));
+  const result = scoreGame(payload, getTournament("wyndham-championship"));
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);

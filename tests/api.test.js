@@ -9,10 +9,10 @@ test("scores API shapes the live feed for the browser", async () => {
     fetchedUrl = String(url);
     return new Response(JSON.stringify({
     events: [{
-      id: "401811960",
-      name: "Rocket Mortgage Classic",
-      date: "2026-07-30T04:00Z",
-      endDate: "2026-08-02T04:00Z",
+      id: "401811961",
+      name: "Wyndham Championship",
+      date: "2026-08-06T04:00Z",
+      endDate: "2026-08-09T04:00Z",
       competitions: [{
         competitors: [{
           id: "10140",
@@ -38,15 +38,15 @@ test("scores API shapes the live feed for the browser", async () => {
   };
 
   try {
-    await scoresHandler({ method: "GET", url: "/api/scores?tournament=rocket-classic", headers: { host: "example.test" } }, response);
+    await scoresHandler({ method: "GET", url: "/api/scores?tournament=wyndham-championship", headers: { host: "example.test" } }, response);
   } finally {
     globalThis.fetch = originalFetch;
   }
 
   assert.equal(statusCode, 200);
-  assert.ok(fetchedUrl.includes("event=401811960"));
-  assert.equal(body.event.id, "401811960");
-  assert.equal(body.event.slug, "rocket-classic");
+  assert.ok(fetchedUrl.includes("event=401811961"));
+  assert.equal(body.event.id, "401811961");
+  assert.equal(body.event.slug, "wyndham-championship");
   assert.equal(body.event.currentRound, 2);
   assert.equal(body.players[0].name, "Scottie Scheffler");
   assert.equal(body.players[0].missedCut, true);

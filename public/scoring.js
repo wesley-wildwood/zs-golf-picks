@@ -1,28 +1,28 @@
 export const TOURNAMENTS = {
-  "rocket-classic": {
-    slug: "rocket-classic",
-    eventId: "401811960",
-    eventName: "Rocket Mortgage Classic",
-    shortName: "Rocket Mortgage",
-    venue: "Detroit Golf Club",
-    location: "Detroit, Michigan",
+  "wyndham-championship": {
+    slug: "wyndham-championship",
+    eventId: "401811961",
+    eventName: "Wyndham Championship",
+    shortName: "Wyndham",
+    venue: "Sedgefield Country Club",
+    location: "Greensboro, North Carolina",
     par: 70,
     teams: {
       Sean: {
-        starters: ["Chris Gotterup", "Xander Schauffele", "Russell Henley", "Si Woo Kim"],
-        alt: "Jacob Bridgeman",
-        bestBall: "Ryan Gerard"
+        starters: ["Jackson Koivun", "Ryan Gerard", "Aaron Rai", "Ben Griffin"],
+        alt: "Michael Kim",
+        bestBall: "Tom Kim"
       },
       Zach: {
-        starters: ["Cameron Young", "Jackson Koivun", "Hideki Matsuyama", "Jordan Spieth"],
-        alt: "Ben Griffin",
-        bestBall: "Jake Knapp"
+        starters: ["Cameron Young", "Hideki Matsuyama", "Alex Fitzpatrick", "Jordan Spieth"],
+        alt: "Brian Harman",
+        bestBall: "Maverick McNealy"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "rocket-classic";
+export const DEFAULT_TOURNAMENT_SLUG = "wyndham-championship";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
@@ -44,10 +44,15 @@ const NAME_ALIASES = new Map([
   ["henley", "russell-henley"],
   ["cam-young", "cameron-young"],
   ["hideki", "hideki-matsuyama"],
+  ["fitzpatrick", "alex-fitzpatrick"],
   ["spieth", "jordan-spieth"],
   ["gerard", "ryan-gerard"],
   ["bridgeman", "jacob-bridgeman"],
-  ["griffin", "ben-griffin"]
+  ["griffin", "ben-griffin"],
+  ["rai", "aaron-rai"],
+  ["maverick", "maverick-mcnealy"],
+  ["harman", "brian-harman"],
+  ["michael-kim", "michael-kim"]
 ]);
 
 export function getTournament(slug) {

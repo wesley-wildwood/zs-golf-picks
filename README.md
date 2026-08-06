@@ -2,7 +2,7 @@
 
 Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
-- `public/`: browser app for this week's Rocket Mortgage Classic leaderboard
+- `public/`: browser app for this week's Wyndham Championship leaderboard
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
 - `tests/`: scoring-rule and API checks
@@ -10,20 +10,20 @@ Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
 ## Current Tournament
 
-**Rocket Mortgage Classic**
+**Wyndham Championship**
 
-- Event ID: `401811960`
-- Venue: Detroit Golf Club, Detroit, Michigan
+- Event ID: `401811961`
+- Venue: Sedgefield Country Club, Greensboro, North Carolina
 - Par: 70
 
 ## Picks
 
-- Sean starters: Chris Gotterup, Xander Schauffele, Russell Henley, Si Woo Kim
-- Sean alt: Jacob Bridgeman
-- Sean Best Ball: Ryan Gerard
-- Zach starters: Cameron Young, Jackson Koivun, Hideki Matsuyama, Jordan Spieth
-- Zach alt: Ben Griffin
-- Zach Best Ball: Jake Knapp
+- Sean starters: Jackson Koivun, Ryan Gerard, Aaron Rai, Ben Griffin
+- Sean alt: Michael Kim
+- Sean Best Ball: Tom Kim
+- Zach starters: Cameron Young, Hideki Matsuyama, Alex Fitzpatrick, Jordan Spieth
+- Zach alt: Brian Harman
+- Zach Best Ball: Maverick McNealy
 
 ## Updating Future Weeks
 
