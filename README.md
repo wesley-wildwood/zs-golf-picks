@@ -2,7 +2,7 @@
 
 Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
-- `public/`: browser app for this week's Wyndham Championship leaderboard
+- `public/`: browser app for this week's FedEx St. Jude Championship leaderboard
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
 - `tests/`: scoring-rule and API checks
@@ -10,20 +10,20 @@ Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
 ## Current Tournament
 
-**Wyndham Championship**
+**FedEx St. Jude Championship**
 
-- Event ID: `401811961`
-- Venue: Sedgefield Country Club, Greensboro, North Carolina
+- Event ID: `401811962`
+- Venue: TPC Southwind, Memphis, Tennessee
 - Par: 70
 
 ## Picks
 
-- Sean starters: Jackson Koivun, Ryan Gerard, Aaron Rai, Ben Griffin
-- Sean alt: Michael Kim
+- Sean starters: Cameron Young, Matthew Fitzpatrick, Rory McIlroy, Hideki Matsuyama
+- Sean alt: Collin Morikawa
 - Sean Best Ball: Tom Kim
-- Zach starters: Cameron Young, Hideki Matsuyama, Alex Fitzpatrick, Jordan Spieth
-- Zach alt: Brian Harman
-- Zach Best Ball: Maverick McNealy
+- Zach starters: Scottie Scheffler, Xander Schauffele, Sam Burns, Jordan Spieth
+- Zach alt: Tommy Fleetwood
+- Zach Best Ball: Chris Gotterup
 
 ## Updating Future Weeks
 

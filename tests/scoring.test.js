@@ -45,10 +45,10 @@ test("future placeholder rounds never create phantom scores", () => {
 
 test("missed-cut golfers render as missed cut instead of not started", () => {
   const result = scoreGame({
-    event: { slug: "wyndham-championship", currentRound: 3, par: 70 },
+    event: { slug: "st-jude-championship", currentRound: 3, par: 70 },
     players: [{
-      id: "michael-kim",
-      name: "Michael Kim",
+      id: "collin-morikawa",
+      name: "Collin Morikawa",
       missedCut: true,
       tournamentToPar: 2,
       position: null,
@@ -58,7 +58,7 @@ test("missed-cut golfers render as missed cut instead of not started", () => {
         3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
       }
     }]
-  }, getTournament("wyndham-championship"));
+  }, getTournament("st-jude-championship"));
 
   assert.equal(result.altRows[0].status, "missed_cut");
   assert.equal(result.altRows[0].rounds[2], null);
@@ -75,6 +75,7 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Ludvig Åberg"), normalizeName("Ludvig Aberg"));
   assert.equal(normalizeName("David Thompson"), normalizeName("Davis Thompson"));
   assert.equal(normalizeName("Hideki Matsuyanma"), normalizeName("Hideki Matsuyama"));
+  assert.equal(normalizeName("Hideki Matzuyama"), normalizeName("Hideki Matsuyama"));
   assert.equal(normalizeName("Tom Kin"), normalizeName("Tom Kim"));
   assert.equal(normalizeName("Suber"), normalizeName("Jackson Suber"));
   assert.equal(normalizeName("Coody"), normalizeName("Pierceson Coody"));
@@ -92,21 +93,24 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Bridgeman"), normalizeName("Jacob Bridgeman"));
   assert.equal(normalizeName("Griffin"), normalizeName("Ben Griffin"));
   assert.equal(normalizeName("Rai"), normalizeName("Aaron Rai"));
-  assert.equal(normalizeName("Fitzpatrick"), normalizeName("Alex Fitzpatrick"));
+  assert.equal(normalizeName("Fitzpatrick"), normalizeName("Matt Fitzpatrick"));
+  assert.equal(normalizeName("Matthew Fitzpatrick"), normalizeName("Matt Fitzpatrick"));
   assert.equal(normalizeName("Maverick"), normalizeName("Maverick McNealy"));
   assert.equal(normalizeName("Harman"), normalizeName("Brian Harman"));
+  assert.equal(normalizeName("Morikawa"), normalizeName("Collin Morikawa"));
+  assert.equal(normalizeName("Fleetwood"), normalizeName("Tommy Fleetwood"));
 });
 
-test("Wyndham Championship picks produce both team scores", () => {
+test("FedEx St. Jude Championship picks produce both team scores", () => {
   const names = [
-    "Jackson Koivun", "Ryan Gerard", "Aaron Rai", "Ben Griffin", "Michael Kim", "Tom Kim",
-    "Cameron Young", "Hideki Matsuyama", "Alex Fitzpatrick", "Jordan Spieth", "Brian Harman", "Maverick McNealy"
+    "Cameron Young", "Matt Fitzpatrick", "Rory McIlroy", "Hideki Matsuyama", "Collin Morikawa", "Tom Kim",
+    "Scottie Scheffler", "Xander Schauffele", "Sam Burns", "Jordan Spieth", "Tommy Fleetwood", "Chris Gotterup"
   ];
   const payload = {
-    event: { slug: "wyndham-championship", currentRound: 2, par: 70 },
+    event: { slug: "st-jude-championship", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("wyndham-championship"));
+  const result = scoreGame(payload, getTournament("st-jude-championship"));
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);

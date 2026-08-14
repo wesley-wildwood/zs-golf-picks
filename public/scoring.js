@@ -1,34 +1,35 @@
 export const TOURNAMENTS = {
-  "wyndham-championship": {
-    slug: "wyndham-championship",
-    eventId: "401811961",
-    eventName: "Wyndham Championship",
-    shortName: "Wyndham",
-    venue: "Sedgefield Country Club",
-    location: "Greensboro, North Carolina",
+  "st-jude-championship": {
+    slug: "st-jude-championship",
+    eventId: "401811962",
+    eventName: "FedEx St. Jude Championship",
+    shortName: "St. Jude",
+    venue: "TPC Southwind",
+    location: "Memphis, Tennessee",
     par: 70,
     teams: {
       Sean: {
-        starters: ["Jackson Koivun", "Ryan Gerard", "Aaron Rai", "Ben Griffin"],
-        alt: "Michael Kim",
+        starters: ["Cameron Young", "Matthew Fitzpatrick", "Rory McIlroy", "Hideki Matsuyama"],
+        alt: "Collin Morikawa",
         bestBall: "Tom Kim"
       },
       Zach: {
-        starters: ["Cameron Young", "Hideki Matsuyama", "Alex Fitzpatrick", "Jordan Spieth"],
-        alt: "Brian Harman",
-        bestBall: "Maverick McNealy"
+        starters: ["Scottie Scheffler", "Xander Schauffele", "Sam Burns", "Jordan Spieth"],
+        alt: "Tommy Fleetwood",
+        bestBall: "Chris Gotterup"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "wyndham-championship";
+export const DEFAULT_TOURNAMENT_SLUG = "st-jude-championship";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
   ["tyrell-hatton", "tyrrell-hatton"],
   ["ludvig-aberg", "ludvig-aberg"],
   ["matthew-fitzpatrick", "matt-fitzpatrick"],
+  ["hideki-matzuyama", "hideki-matsuyama"],
   ["david-thompson", "davis-thompson"],
   ["hideki-matsuyanma", "hideki-matsuyama"],
   ["tom-kin", "tom-kim"],
@@ -44,7 +45,13 @@ const NAME_ALIASES = new Map([
   ["henley", "russell-henley"],
   ["cam-young", "cameron-young"],
   ["hideki", "hideki-matsuyama"],
-  ["fitzpatrick", "alex-fitzpatrick"],
+  ["fitzpatrick", "matt-fitzpatrick"],
+  ["rory", "rory-mcilroy"],
+  ["sam-burns", "sam-burns"],
+  ["collin-morikawa", "collin-morikawa"],
+  ["morikawa", "collin-morikawa"],
+  ["tommy-fleetwood", "tommy-fleetwood"],
+  ["fleetwood", "tommy-fleetwood"],
   ["spieth", "jordan-spieth"],
   ["gerard", "ryan-gerard"],
   ["bridgeman", "jacob-bridgeman"],
