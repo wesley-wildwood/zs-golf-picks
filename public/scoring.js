@@ -1,28 +1,28 @@
 export const TOURNAMENTS = {
-  "st-jude-championship": {
-    slug: "st-jude-championship",
-    eventId: "401811962",
-    eventName: "FedEx St. Jude Championship",
-    shortName: "St. Jude",
-    venue: "TPC Southwind",
-    location: "Memphis, Tennessee",
+  "bmw-championship": {
+    slug: "bmw-championship",
+    eventId: "401811963",
+    eventName: "BMW Championship",
+    shortName: "BMW",
+    venue: "Bellerive Country Club",
+    location: "St. Louis, Missouri",
     par: 70,
     teams: {
       Sean: {
-        starters: ["Cameron Young", "Matthew Fitzpatrick", "Rory McIlroy", "Hideki Matsuyama"],
-        alt: "Collin Morikawa",
-        bestBall: "Tom Kim"
+        starters: ["Sam Burns", "Xander Schauffele", "Matt Fitzpatrick", "Si Woo Kim"],
+        alt: "Alex Noren",
+        bestBall: "Cameron Young"
       },
       Zach: {
-        starters: ["Scottie Scheffler", "Xander Schauffele", "Sam Burns", "Jordan Spieth"],
-        alt: "Tommy Fleetwood",
-        bestBall: "Chris Gotterup"
+        starters: ["Scottie Scheffler", "Ludvig Aberg", "Tommy Fleetwood", "Chris Gotterup"],
+        alt: "Justin Thomas",
+        bestBall: "Viktor Hovland"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "st-jude-championship";
+export const DEFAULT_TOURNAMENT_SLUG = "bmw-championship";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
@@ -46,6 +46,14 @@ const NAME_ALIASES = new Map([
   ["cam-young", "cameron-young"],
   ["hideki", "hideki-matsuyama"],
   ["fitzpatrick", "matt-fitzpatrick"],
+  ["si-woo", "si-woo-kim"],
+  ["si-woo-kim", "si-woo-kim"],
+  ["alex-noren", "alex-noren"],
+  ["noren", "alex-noren"],
+  ["viktor-hovland", "viktor-hovland"],
+  ["hovland", "viktor-hovland"],
+  ["justin-thomas", "justin-thomas"],
+  ["jt", "justin-thomas"],
   ["rory", "rory-mcilroy"],
   ["sam-burns", "sam-burns"],
   ["collin-morikawa", "collin-morikawa"],

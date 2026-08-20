@@ -2,7 +2,7 @@
 
 Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
-- `public/`: browser app for this week's FedEx St. Jude Championship leaderboard
+- `public/`: browser app for this week's BMW Championship leaderboard
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
 - `tests/`: scoring-rule and API checks
@@ -10,20 +10,20 @@ Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
 ## Current Tournament
 
-**FedEx St. Jude Championship**
+**BMW Championship**
 
-- Event ID: `401811962`
-- Venue: TPC Southwind, Memphis, Tennessee
+- Event ID: `401811963`
+- Venue: Bellerive Country Club, St. Louis, Missouri
 - Par: 70
 
 ## Picks
 
-- Sean starters: Cameron Young, Matthew Fitzpatrick, Rory McIlroy, Hideki Matsuyama
-- Sean alt: Collin Morikawa
-- Sean Best Ball: Tom Kim
-- Zach starters: Scottie Scheffler, Xander Schauffele, Sam Burns, Jordan Spieth
-- Zach alt: Tommy Fleetwood
-- Zach Best Ball: Chris Gotterup
+- Sean starters: Sam Burns, Xander Schauffele, Matt Fitzpatrick, Si Woo Kim
+- Sean alt: Alex Noren
+- Sean Best Ball: Cameron Young
+- Zach starters: Scottie Scheffler, Ludvig Aberg, Tommy Fleetwood, Chris Gotterup
+- Zach alt: Justin Thomas
+- Zach Best Ball: Viktor Hovland
 
 ## Updating Future Weeks
 

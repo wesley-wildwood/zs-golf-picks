@@ -45,10 +45,10 @@ test("future placeholder rounds never create phantom scores", () => {
 
 test("missed-cut golfers render as missed cut instead of not started", () => {
   const result = scoreGame({
-    event: { slug: "st-jude-championship", currentRound: 3, par: 70 },
+    event: { slug: "bmw-championship", currentRound: 3, par: 70 },
     players: [{
-      id: "collin-morikawa",
-      name: "Collin Morikawa",
+      id: "alex-noren",
+      name: "Alex Noren",
       missedCut: true,
       tournamentToPar: 2,
       position: null,
@@ -58,7 +58,7 @@ test("missed-cut golfers render as missed cut instead of not started", () => {
         3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
       }
     }]
-  }, getTournament("st-jude-championship"));
+  }, getTournament("bmw-championship"));
 
   assert.equal(result.altRows[0].status, "missed_cut");
   assert.equal(result.altRows[0].rounds[2], null);
@@ -99,18 +99,22 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Harman"), normalizeName("Brian Harman"));
   assert.equal(normalizeName("Morikawa"), normalizeName("Collin Morikawa"));
   assert.equal(normalizeName("Fleetwood"), normalizeName("Tommy Fleetwood"));
+  assert.equal(normalizeName("Si Woo"), normalizeName("Si Woo Kim"));
+  assert.equal(normalizeName("Noren"), normalizeName("Alex Noren"));
+  assert.equal(normalizeName("Hovland"), normalizeName("Viktor Hovland"));
+  assert.equal(normalizeName("JT"), normalizeName("Justin Thomas"));
 });
 
-test("FedEx St. Jude Championship picks produce both team scores", () => {
+test("BMW Championship picks produce both team scores", () => {
   const names = [
-    "Cameron Young", "Matt Fitzpatrick", "Rory McIlroy", "Hideki Matsuyama", "Collin Morikawa", "Tom Kim",
-    "Scottie Scheffler", "Xander Schauffele", "Sam Burns", "Jordan Spieth", "Tommy Fleetwood", "Chris Gotterup"
+    "Sam Burns", "Xander Schauffele", "Matt Fitzpatrick", "Si Woo Kim", "Alex Noren", "Cameron Young",
+    "Scottie Scheffler", "Ludvig Åberg", "Tommy Fleetwood", "Chris Gotterup", "Justin Thomas", "Viktor Hovland"
   ];
   const payload = {
-    event: { slug: "st-jude-championship", currentRound: 2, par: 70 },
+    event: { slug: "bmw-championship", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("st-jude-championship"));
+  const result = scoreGame(payload, getTournament("bmw-championship"));
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);

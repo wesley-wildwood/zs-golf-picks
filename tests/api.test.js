@@ -9,10 +9,10 @@ test("scores API shapes the live feed for the browser", async () => {
     fetchedUrl = String(url);
     return new Response(JSON.stringify({
     events: [{
-      id: "401811962",
-      name: "FedEx St. Jude Championship",
-      date: "2026-08-13T04:00Z",
-      endDate: "2026-08-16T04:00Z",
+      id: "401811963",
+      name: "BMW Championship",
+      date: "2026-08-20T04:00Z",
+      endDate: "2026-08-23T04:00Z",
       competitions: [{
         competitors: [{
           id: "10140",
@@ -38,15 +38,15 @@ test("scores API shapes the live feed for the browser", async () => {
   };
 
   try {
-    await scoresHandler({ method: "GET", url: "/api/scores?tournament=st-jude-championship", headers: { host: "example.test" } }, response);
+    await scoresHandler({ method: "GET", url: "/api/scores?tournament=bmw-championship", headers: { host: "example.test" } }, response);
   } finally {
     globalThis.fetch = originalFetch;
   }
 
   assert.equal(statusCode, 200);
-  assert.ok(fetchedUrl.includes("event=401811962"));
-  assert.equal(body.event.id, "401811962");
-  assert.equal(body.event.slug, "st-jude-championship");
+  assert.ok(fetchedUrl.includes("event=401811963"));
+  assert.equal(body.event.id, "401811963");
+  assert.equal(body.event.slug, "bmw-championship");
   assert.equal(body.event.currentRound, 2);
   assert.equal(body.players[0].name, "Scottie Scheffler");
   assert.equal(body.players[0].missedCut, true);
