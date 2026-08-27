@@ -2,7 +2,7 @@
 
 Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
-- `public/`: browser app for this week's BMW Championship leaderboard
+- `public/`: browser app for this week's TOUR Championship leaderboard
 - `api/scores.js`: Vercel live-score function
 - `supabase/migrations/001_initial.sql`: score snapshot database
 - `tests/`: scoring-rule and API checks
@@ -10,20 +10,20 @@ Deployment-ready leaderboard for Sean and Zach's weekly Golf Picks game.
 
 ## Current Tournament
 
-**BMW Championship**
+**TOUR Championship**
 
-- Event ID: `401811963`
-- Venue: Bellerive Country Club, St. Louis, Missouri
+- Event ID: `401811964`
+- Venue: East Lake Golf Club, Atlanta, Georgia
 - Par: 70
 
 ## Picks
 
-- Sean starters: Sam Burns, Xander Schauffele, Matt Fitzpatrick, Si Woo Kim
-- Sean alt: Alex Noren
-- Sean Best Ball: Cameron Young
-- Zach starters: Scottie Scheffler, Ludvig Aberg, Tommy Fleetwood, Chris Gotterup
-- Zach alt: Justin Thomas
-- Zach Best Ball: Viktor Hovland
+- Sean starters: Sam Burns, Matt Fitzpatrick, Si Woo Kim, Chris Gotterup
+- Sean alt: Collin Morikawa
+- Sean Best Ball: Ludvig Aberg
+- Zach starters: Scottie Scheffler, Rory McIlroy, Tom Kim, Ryan Fox
+- Zach alt: Viktor Hovland
+- Zach Best Ball: Justin Rose
 
 ## Updating Future Weeks
 

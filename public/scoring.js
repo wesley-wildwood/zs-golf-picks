@@ -1,28 +1,28 @@
 export const TOURNAMENTS = {
-  "bmw-championship": {
-    slug: "bmw-championship",
-    eventId: "401811963",
-    eventName: "BMW Championship",
-    shortName: "BMW",
-    venue: "Bellerive Country Club",
-    location: "St. Louis, Missouri",
+  "tour-championship": {
+    slug: "tour-championship",
+    eventId: "401811964",
+    eventName: "TOUR Championship",
+    shortName: "TOUR Championship",
+    venue: "East Lake Golf Club",
+    location: "Atlanta, Georgia",
     par: 70,
     teams: {
       Sean: {
-        starters: ["Sam Burns", "Xander Schauffele", "Matt Fitzpatrick", "Si Woo Kim"],
-        alt: "Alex Noren",
-        bestBall: "Cameron Young"
+        starters: ["Sam Burns", "Matt Fitzpatrick", "Si Woo Kim", "Chris Gotterup"],
+        alt: "Collin Morikawa",
+        bestBall: "Ludvig Aberg"
       },
       Zach: {
-        starters: ["Scottie Scheffler", "Ludvig Aberg", "Tommy Fleetwood", "Chris Gotterup"],
-        alt: "Justin Thomas",
-        bestBall: "Viktor Hovland"
+        starters: ["Scottie Scheffler", "Rory McIlroy", "Tom Kim", "Ryan Fox"],
+        alt: "Viktor Hovland",
+        bestBall: "Justin Rose"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "bmw-championship";
+export const DEFAULT_TOURNAMENT_SLUG = "tour-championship";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
@@ -55,6 +55,7 @@ const NAME_ALIASES = new Map([
   ["justin-thomas", "justin-thomas"],
   ["jt", "justin-thomas"],
   ["rory", "rory-mcilroy"],
+  ["mcilroy", "rory-mcilroy"],
   ["sam-burns", "sam-burns"],
   ["collin-morikawa", "collin-morikawa"],
   ["morikawa", "collin-morikawa"],
@@ -67,7 +68,12 @@ const NAME_ALIASES = new Map([
   ["rai", "aaron-rai"],
   ["maverick", "maverick-mcnealy"],
   ["harman", "brian-harman"],
-  ["michael-kim", "michael-kim"]
+  ["michael-kim", "michael-kim"],
+  ["ludvig", "ludvig-aberg"],
+  ["fox", "ryan-fox"],
+  ["ryan-fox", "ryan-fox"],
+  ["rose", "justin-rose"],
+  ["justin-rose", "justin-rose"]
 ]);
 
 export function getTournament(slug) {

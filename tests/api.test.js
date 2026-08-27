@@ -9,10 +9,10 @@ test("scores API shapes the live feed for the browser", async () => {
     fetchedUrl = String(url);
     return new Response(JSON.stringify({
     events: [{
-      id: "401811963",
-      name: "BMW Championship",
-      date: "2026-08-20T04:00Z",
-      endDate: "2026-08-23T04:00Z",
+      id: "401811964",
+      name: "TOUR Championship",
+      date: "2026-08-27T04:00Z",
+      endDate: "2026-08-30T04:00Z",
       competitions: [{
         competitors: [{
           id: "10140",
@@ -38,15 +38,15 @@ test("scores API shapes the live feed for the browser", async () => {
   };
 
   try {
-    await scoresHandler({ method: "GET", url: "/api/scores?tournament=bmw-championship", headers: { host: "example.test" } }, response);
+    await scoresHandler({ method: "GET", url: "/api/scores?tournament=tour-championship", headers: { host: "example.test" } }, response);
   } finally {
     globalThis.fetch = originalFetch;
   }
 
   assert.equal(statusCode, 200);
-  assert.ok(fetchedUrl.includes("event=401811963"));
-  assert.equal(body.event.id, "401811963");
-  assert.equal(body.event.slug, "bmw-championship");
+  assert.ok(fetchedUrl.includes("event=401811964"));
+  assert.equal(body.event.id, "401811964");
+  assert.equal(body.event.slug, "tour-championship");
   assert.equal(body.event.currentRound, 2);
   assert.equal(body.players[0].name, "Scottie Scheffler");
   assert.equal(body.players[0].missedCut, true);

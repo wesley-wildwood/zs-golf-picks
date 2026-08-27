@@ -45,10 +45,10 @@ test("future placeholder rounds never create phantom scores", () => {
 
 test("missed-cut golfers render as missed cut instead of not started", () => {
   const result = scoreGame({
-    event: { slug: "bmw-championship", currentRound: 3, par: 70 },
+    event: { slug: "tour-championship", currentRound: 3, par: 70 },
     players: [{
-      id: "alex-noren",
-      name: "Alex Noren",
+      id: "collin-morikawa",
+      name: "Collin Morikawa",
       missedCut: true,
       tournamentToPar: 2,
       position: null,
@@ -58,7 +58,7 @@ test("missed-cut golfers render as missed cut instead of not started", () => {
         3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
       }
     }]
-  }, getTournament("bmw-championship"));
+  }, getTournament("tour-championship"));
 
   assert.equal(result.altRows[0].status, "missed_cut");
   assert.equal(result.altRows[0].rounds[2], null);
@@ -103,18 +103,21 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Noren"), normalizeName("Alex Noren"));
   assert.equal(normalizeName("Hovland"), normalizeName("Viktor Hovland"));
   assert.equal(normalizeName("JT"), normalizeName("Justin Thomas"));
+  assert.equal(normalizeName("Ludvig"), normalizeName("Ludvig Aberg"));
+  assert.equal(normalizeName("Fox"), normalizeName("Ryan Fox"));
+  assert.equal(normalizeName("Rose"), normalizeName("Justin Rose"));
 });
 
-test("BMW Championship picks produce both team scores", () => {
+test("TOUR Championship picks produce both team scores", () => {
   const names = [
-    "Sam Burns", "Xander Schauffele", "Matt Fitzpatrick", "Si Woo Kim", "Alex Noren", "Cameron Young",
-    "Scottie Scheffler", "Ludvig Åberg", "Tommy Fleetwood", "Chris Gotterup", "Justin Thomas", "Viktor Hovland"
+    "Sam Burns", "Matt Fitzpatrick", "Si Woo Kim", "Chris Gotterup", "Collin Morikawa", "Ludvig Åberg",
+    "Scottie Scheffler", "Rory McIlroy", "Tom Kim", "Ryan Fox", "Viktor Hovland", "Justin Rose"
   ];
   const payload = {
-    event: { slug: "bmw-championship", currentRound: 2, par: 70 },
+    event: { slug: "tour-championship", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("bmw-championship"));
+  const result = scoreGame(payload, getTournament("tour-championship"));
   assert.ok(Number.isFinite(result.Sean.total));
   assert.ok(Number.isFinite(result.Zach.total));
   assert.equal(result.altRows.length, 2);
