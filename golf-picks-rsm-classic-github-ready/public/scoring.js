@@ -1,0 +1,253 @@
+export const TOURNAMENTS = {
+  "rsm-classic": {
+    slug: "rsm-classic",
+    eventId: "401850981",
+    eventName: "The RSM Classic",
+    shortName: "RSM Classic",
+    venue: "Sea Island Golf Club",
+    location: "St. Simons Island, Georgia",
+    par: 70,
+    scoringRounds: [2, 3, 4],
+    hasAlternates: false,
+    showGameToPar: false,
+    teams: {
+      Sean: {
+        starters: ["Keith Mitchell", "Sami Valimaki", "Sepp Straka", "Rasmus Hojgaard"],
+        bestBall: "Chris Kirk"
+      },
+      Zach: {
+        starters: ["Michael Thorbjornsen", "Maverick McNealy", "Max Greyserman", "Jackson Koivun"],
+        bestBall: "Garrick Higgo"
+      }
+    }
+  }
+};
+
+export const DEFAULT_TOURNAMENT_SLUG = "rsm-classic";
+
+const NAME_ALIASES = new Map([
+  ["rober-macintyre", "robert-macintyre"],
+  ["tyrell-hatton", "tyrrell-hatton"],
+  ["ludvig-aberg", "ludvig-aberg"],
+  ["matthew-fitzpatrick", "matt-fitzpatrick"],
+  ["hideki-matzuyama", "hideki-matsuyama"],
+  ["david-thompson", "davis-thompson"],
+  ["hideki-matsuyanma", "hideki-matsuyama"],
+  ["tom-kin", "tom-kim"],
+  ["suber", "jackson-suber"],
+  ["coody", "pierceson-coody"],
+  ["koivun", "jackson-koivun"],
+  ["knapp", "jake-knapp"],
+  ["meissner", "mac-meissner"],
+  ["stevens", "sam-stevens"],
+  ["homa", "max-homa"],
+  ["gotterup", "chris-gotterup"],
+  ["xander", "xander-schauffele"],
+  ["henley", "russell-henley"],
+  ["cam-young", "cameron-young"],
+  ["hideki", "hideki-matsuyama"],
+  ["fitzpatrick", "matt-fitzpatrick"],
+  ["si-woo", "si-woo-kim"],
+  ["si-woo-kim", "si-woo-kim"],
+  ["alex-noren", "alex-noren"],
+  ["noren", "alex-noren"],
+  ["viktor-hovland", "viktor-hovland"],
+  ["hovland", "viktor-hovland"],
+  ["justin-thomas", "justin-thomas"],
+  ["jt", "justin-thomas"],
+  ["rory", "rory-mcilroy"],
+  ["mcilroy", "rory-mcilroy"],
+  ["sam-burns", "sam-burns"],
+  ["collin-morikawa", "collin-morikawa"],
+  ["morikawa", "collin-morikawa"],
+  ["tommy-fleetwood", "tommy-fleetwood"],
+  ["fleetwood", "tommy-fleetwood"],
+  ["spieth", "jordan-spieth"],
+  ["gerard", "ryan-gerard"],
+  ["bridgeman", "jacob-bridgeman"],
+  ["griffin", "ben-griffin"],
+  ["rai", "aaron-rai"],
+  ["maverick", "maverick-mcnealy"],
+  ["harman", "brian-harman"],
+  ["michael-kim", "michael-kim"],
+  ["ludvig", "ludvig-aberg"],
+  ["fox", "ryan-fox"],
+  ["ryan-fox", "ryan-fox"],
+  ["rose", "justin-rose"],
+  ["justin-rose", "justin-rose"],
+  ["keith", "keith-mitchell"],
+  ["keith-mitchell", "keith-mitchell"],
+  ["valimaki", "sami-valimaki"],
+  ["sami-valimaki", "sami-valimaki"],
+  ["straka", "sepp-straka"],
+  ["sepp-straka", "sepp-straka"],
+  ["rasmus", "rasmus-hojgaard"],
+  ["rasmus-hojgaard", "rasmus-hojgaard"],
+  ["thorbs", "michael-thorbjornsen"],
+  ["thorbjornsen", "michael-thorbjornsen"],
+  ["michael-thorbjornsen", "michael-thorbjornsen"],
+  ["greyserman", "max-greyserman"],
+  ["max-greyserman", "max-greyserman"],
+  ["kirk", "chris-kirk"],
+  ["chris-kirk", "chris-kirk"],
+  ["higgo", "garrick-higgo"],
+  ["garrick-higgo", "garrick-higgo"]
+]);
+
+export function getTournament(slug) {
+  return TOURNAMENTS[slug] || TOURNAMENTS[DEFAULT_TOURNAMENT_SLUG];
+}
+
+export function normalizeName(value) {
+  const normalized = String(value || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[øöóòôõ]/g, "o")
+    .replace(/æ/g, "ae")
+    .replace(/[åáàâãä]/g, "a")
+    .replace(/[éèêë]/g, "e")
+    .replace(/[íìîï]/g, "i")
+    .replace(/[úùûü]/g, "u")
+    .replace(/[ýÿ]/g, "y")
+    .replace(/ñ/g, "n")
+    .replace(/ç/g, "c")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  return NAME_ALIASES.get(normalized) || normalized;
+}
+
+export function findPlayer(players, name) {
+  const key = normalizeName(name);
+  return players.find((player) => normalizeName(player.name) === key) || null;
+}
+
+export function projectedRoundScore(round, roundNumber, currentRound, coursePar) {
+  if (!round || roundNumber > currentRound) return null;
+  if (round.status === "complete" && Number.isFinite(round.strokes)) return round.strokes;
+  if (round.status === "playing" && Number.isFinite(round.toPar)) return coursePar + round.toPar;
+  if (roundNumber === currentRound && round.status === "not_started") return coursePar;
+  return null;
+}
+
+export function scoreGolfer(player, currentRound, coursePar) {
+  if (!player) {
+    return {
+      found: false,
+      name: "Not found",
+      status: "missing",
+      holes: 0,
+      missedCut: false,
+      tournamentToPar: null,
+      position: null,
+      rounds: [null, null, null, null],
+      total: null
+    };
+  }
+
+  const rounds = [1, 2, 3, 4].map((roundNumber) =>
+    player.missedCut && roundNumber >= currentRound && player.rounds?.[roundNumber]?.status === "not_started"
+      ? null
+      : projectedRoundScore(player.rounds?.[roundNumber], roundNumber, currentRound, coursePar)
+  );
+  const current = player.rounds?.[currentRound];
+  const completed = [...Array(currentRound)].map((_, index) => player.rounds?.[index + 1]).filter(Boolean);
+  const latest = current || completed.at(-1) || null;
+  const total = rounds.filter(Number.isFinite).reduce((sum, score) => sum + score, 0);
+
+  return {
+    found: true,
+    ...player,
+    status: player.missedCut && latest?.status !== "playing" ? "missed_cut" : latest?.status || "not_started",
+    holes: latest?.holes || 0,
+    rounds,
+    total: rounds.some(Number.isFinite) ? total : null
+  };
+}
+
+export function scoreTeam(starterNames, players, currentRound, coursePar, scoringRounds = [1, 2, 3, 4]) {
+  const scoringRoundSet = new Set(scoringRounds);
+  const golfers = starterNames.map((name) => {
+    const scored = scoreGolfer(findPlayer(players, name), currentRound, coursePar);
+    const countedScores = scored.rounds.filter((score, index) => scoringRoundSet.has(index + 1) && Number.isFinite(score));
+    return {
+      ...scored,
+      name,
+      gameTotal: countedScores.length ? countedScores.reduce((sum, score) => sum + score, 0) : null
+    };
+  });
+
+  const rounds = [0, 1, 2, 3].map((roundIndex) => {
+    if (!scoringRoundSet.has(roundIndex + 1)) return { total: null, counting: [] };
+    const eligible = golfers
+      .map((golfer, golferIndex) => ({ golferIndex, score: golfer.rounds[roundIndex] }))
+      .filter((entry) => Number.isFinite(entry.score))
+      .sort((a, b) => a.score - b.score);
+    const counting = eligible.slice(0, 2);
+    return {
+      total: counting.length === 2 ? counting[0].score + counting[1].score : null,
+      counting: counting.map((entry) => entry.golferIndex)
+    };
+  });
+
+  const total = rounds.filter((round) => Number.isFinite(round.total)).reduce((sum, round) => sum + round.total, 0);
+  const countedRounds = rounds.filter((round) => Number.isFinite(round.total)).length;
+  const toPar = Number.isFinite(total) && countedRounds > 0 ? total - countedRounds * 2 * coursePar : null;
+  return {
+    golfers,
+    rounds,
+    scoringRounds,
+    total: rounds.some((round) => Number.isFinite(round.total)) ? total : null,
+    toPar
+  };
+}
+
+export function scoreGame(payload, tournament = getTournament(payload.event?.slug)) {
+  const currentRound = Math.min(4, Math.max(1, payload.event?.currentRound || 1));
+  const coursePar = payload.event?.par || tournament.par;
+  const players = payload.players || [];
+  const scoringRounds = tournament.scoringRounds || [1, 2, 3, 4];
+  const Sean = scoreTeam(tournament.teams.Sean.starters, players, currentRound, coursePar, scoringRounds);
+  const Zach = scoreTeam(tournament.teams.Zach.starters, players, currentRound, coursePar, scoringRounds);
+  const altRows = tournament.hasAlternates === false ? [] : ["Sean", "Zach"].map((owner) => ({
+    owner,
+    ...scoreGolfer(findPlayer(players, tournament.teams[owner].alt), currentRound, coursePar),
+    name: tournament.teams[owner].alt
+  }));
+  const bestBallRows = ["Sean", "Zach"].map((owner) => ({
+    owner,
+    ...scoreGolfer(findPlayer(players, tournament.teams[owner].bestBall), currentRound, coursePar),
+    name: tournament.teams[owner].bestBall
+  }));
+
+  return {
+    Sean,
+    Zach,
+    leaderText: matchupText(Sean, Zach),
+    altRows,
+    altText: altRows.length ? alternateText(altRows) : "No alternate match this week.",
+    bestBallRows,
+    bestBallText: bestBallText(bestBallRows, tournament.shortName)
+  };
+}
+
+function matchupText(sean, zach) {
+  if (!Number.isFinite(sean.total) || !Number.isFinite(zach.total)) return "Waiting for scores";
+  const difference = sean.total - zach.total;
+  if (difference === 0) return "All square";
+  return difference < 0 ? `Sean leads by ${Math.abs(difference)}` : `Zach leads by ${difference}`;
+}
+
+function alternateText(rows) {
+  if (!rows.every((row) => Number.isFinite(row.total))) return "Waiting for both alternate scores.";
+  const difference = rows[0].total - rows[1].total;
+  if (difference === 0) return "Alternate match is tied.";
+  return `${rows[difference < 0 ? 0 : 1].owner} leads the alternate match by ${Math.abs(difference)}.`;
+}
+
+function bestBallText(rows, eventName) {
+  const leaders = rows.filter((row) => Number(row.position) === 1);
+  if (!leaders.length) return `No Best Ball pick currently leads the ${eventName}.`;
+  return `${leaders.map((row) => row.owner).join(" and ")} currently has a winning Best Ball pick.`;
+}
