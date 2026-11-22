@@ -12,8 +12,8 @@
       <header class="topbar">
         <div>
           <p class="eyebrow">Golf Picks Live</p>
-          <h1 id="event-title">TOUR Championship</h1>
-          <p id="event-subtitle" class="subtle">East Lake Golf Club · Atlanta, Georgia</p>
+          <h1 id="event-title">The RSM Classic</h1>
+          <p id="event-subtitle" class="subtle">Sea Island Golf Club · St. Simons Island, Georgia</p>
         </div>
         <div id="source-pill" class="source-pill connecting">
           <span class="pulse"></span>
@@ -44,7 +44,7 @@
       </section>
 
       <div class="refresh-row">
-        <span id="event-meta">Par 70 · Auto-refreshes every 60 seconds</span>
+        <span id="event-meta">Main game R2–R4 · No alternates · Auto-refreshes every 60 seconds</span>
         <button id="refresh-button" type="button" class="refresh-button" aria-label="Refresh scores">
           <span class="refresh-icon" aria-hidden="true">↻</span>
           <span>Refresh scores</span>
@@ -56,18 +56,18 @@
           <div class="panel-heading">
             <div><p class="eyebrow">Player A</p><h2>Sean</h2></div>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>Golfer</th><th>Status</th><th>Total</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr></thead><tbody id="sean-team"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>Golfer</th><th>Status</th><th>Game Total</th><th>R2</th><th>R3</th><th>R4</th></tr></thead><tbody id="sean-team"></tbody></table></div>
         </article>
         <article class="panel team-panel zach">
           <div class="panel-heading">
             <div><p class="eyebrow">Player B</p><h2>Zach</h2></div>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>Golfer</th><th>Status</th><th>Total</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr></thead><tbody id="zach-team"></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>Golfer</th><th>Status</th><th>Game Total</th><th>R2</th><th>R3</th><th>R4</th></tr></thead><tbody id="zach-team"></tbody></table></div>
         </article>
       </section>
 
-      <section class="side-grid">
-        <article class="panel side-game">
+      <section id="side-grid" class="side-grid single">
+        <article id="alt-game" class="panel side-game" hidden>
           <div class="panel-heading"><h2>Alternate Head-to-Head</h2></div>
           <div class="table-wrap"><table><thead><tr><th>Player</th><th>Pick</th><th>Status</th><th>Round</th><th>Total</th></tr></thead><tbody id="alt-table"></tbody></table></div>
           <p id="alt-verdict" class="verdict">Waiting for scores.</p>

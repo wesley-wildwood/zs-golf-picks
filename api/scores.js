@@ -26,7 +26,8 @@ function inferCurrentRound(competitors) {
 
 function shapePlayer(competitor, currentRound) {
   const rounds = {};
-  for (const round of competitor.linescores || []) {
+  const lineScores = competitor.linescores || [];
+  for (const round of lineScores) {
     const roundNumber = Number(round.period);
     if (!roundNumber || roundNumber > 4) continue;
     const holes = round.linescores?.length || 0;
@@ -45,13 +46,18 @@ function shapePlayer(competitor, currentRound) {
     rounds[currentRound] = { strokes: null, toPar: null, holes: 0, teeTime: null, status: "not_started" };
   }
 
+  const hasCurrentRoundEntry = lineScores.some((round) => Number(round.period) === currentRound);
+  const completedPreviousRounds = currentRound > 1 && [...Array(currentRound - 1)]
+    .every((_, index) => rounds[index + 1]?.status === "complete");
+  const inferredCut = currentRound >= 3 && completedPreviousRounds && !hasCurrentRoundEntry;
+
   return {
     id: competitor.id,
     name: competitor.athlete?.displayName,
     shortName: competitor.athlete?.shortName,
     country: competitor.athlete?.flag?.alt || null,
     flag: competitor.athlete?.flag?.href || null,
-    missedCut: hasMissedCut(competitor),
+    missedCut: hasMissedCut(competitor) || inferredCut,
     tournamentToPar: parseToPar(competitor.score),
     position: competitor.order || null,
     rounds

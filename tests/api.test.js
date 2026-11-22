@@ -9,20 +9,29 @@ test("scores API shapes the live feed for the browser", async () => {
     fetchedUrl = String(url);
     return new Response(JSON.stringify({
     events: [{
-      id: "401811964",
-      name: "TOUR Championship",
-      date: "2026-08-27T04:00Z",
-      endDate: "2026-08-30T04:00Z",
+      id: "401850981",
+      name: "The RSM Classic",
+      date: "2026-11-19T05:00Z",
+      endDate: "2026-11-23T05:00Z",
       competitions: [{
         competitors: [{
-          id: "10140",
-          order: 2,
-          score: "-3",
-          status: { type: { description: "Missed Cut", abbreviation: "MC" } },
-          athlete: { displayName: "Scottie Scheffler", shortName: "S. Scheffler" },
+          id: "4425904",
+          order: 3,
+          score: "-9",
+          athlete: { displayName: "Michael Thorbjornsen", shortName: "M. Thorbjornsen" },
           linescores: [
-            { period: 1, value: 71, displayValue: "+1", linescores: Array.from({ length: 18 }, () => ({ value: 4 })) },
-            { period: 2, value: 32, displayValue: "-4", linescores: Array.from({ length: 9 }, () => ({ value: 4 })) }
+            { period: 1, value: 64, displayValue: "-6", linescores: Array.from({ length: 18 }, () => ({ value: 4 })) },
+            { period: 2, value: 69, displayValue: "-3", linescores: Array.from({ length: 18 }, () => ({ value: 4 })) },
+            { period: 3, value: 33, displayValue: "-2", linescores: Array.from({ length: 9 }, () => ({ value: 4 })) }
+          ]
+        }, {
+          id: "8961",
+          order: 93,
+          score: "E",
+          athlete: { displayName: "Sepp Straka", shortName: "S. Straka" },
+          linescores: [
+            { period: 1, value: 66, displayValue: "-4", linescores: Array.from({ length: 18 }, () => ({ value: 4 })) },
+            { period: 2, value: 76, displayValue: "+4", linescores: Array.from({ length: 18 }, () => ({ value: 4 })) }
           ]
         }]
       }]
@@ -38,18 +47,21 @@ test("scores API shapes the live feed for the browser", async () => {
   };
 
   try {
-    await scoresHandler({ method: "GET", url: "/api/scores?tournament=tour-championship", headers: { host: "example.test" } }, response);
+    await scoresHandler({ method: "GET", url: "/api/scores?tournament=rsm-classic", headers: { host: "example.test" } }, response);
   } finally {
     globalThis.fetch = originalFetch;
   }
 
   assert.equal(statusCode, 200);
-  assert.ok(fetchedUrl.includes("event=401811964"));
-  assert.equal(body.event.id, "401811964");
-  assert.equal(body.event.slug, "tour-championship");
-  assert.equal(body.event.currentRound, 2);
-  assert.equal(body.players[0].name, "Scottie Scheffler");
-  assert.equal(body.players[0].missedCut, true);
-  assert.equal(body.players[0].rounds[2].status, "playing");
+  assert.ok(fetchedUrl.includes("event=401850981"));
+  assert.equal(body.event.id, "401850981");
+  assert.equal(body.event.slug, "rsm-classic");
+  assert.equal(body.event.currentRound, 3);
+  assert.equal(body.players[0].name, "Michael Thorbjornsen");
+  assert.equal(body.players[0].missedCut, false);
+  assert.equal(body.players[0].rounds[3].status, "playing");
+  assert.equal(body.players[1].name, "Sepp Straka");
+  assert.equal(body.players[1].missedCut, true);
+  assert.equal(body.players[1].rounds[3].status, "not_started");
   assert.equal(body.snapshotSaved, false);
 });

@@ -86,29 +86,36 @@ function clearScores() {
 }
 
 function render(payload, game, tournament) {
-  renderScoreCard("sean", game.Sean, game.Zach);
-  renderScoreCard("zach", game.Zach, game.Sean);
+  renderScoreCard("sean", game.Sean, game.Zach, tournament);
+  renderScoreCard("zach", game.Zach, game.Sean, tournament);
   document.querySelector("#leader-text").textContent = game.leaderText;
   document.querySelector("#updated-at").textContent = `Updated ${formatTime(payload.updatedAt)}`;
-  document.querySelector("#event-meta").textContent = `Round ${payload.event.currentRound} · Par ${payload.event.par || tournament.par} · Auto-refreshes every 60 seconds`;
+  const scoringLabel = `Main game ${formatRoundList(tournament.scoringRounds || [1, 2, 3, 4])}`;
+  const alternateLabel = tournament.hasAlternates === false ? "No alternates" : "Alternates active";
+  document.querySelector("#event-meta").textContent = `Round ${payload.event.currentRound} · ${scoringLabel} · ${alternateLabel} · Auto-refreshes every 60 seconds`;
   renderTeam("#sean-team", game.Sean);
   renderTeam("#zach-team", game.Zach);
-  renderAltRows("#alt-table", game.altRows, payload.event.currentRound);
+  const altGame = document.querySelector("#alt-game");
+  altGame.hidden = game.altRows.length === 0;
+  document.querySelector("#side-grid").classList.toggle("single", game.altRows.length === 0);
+  if (game.altRows.length) renderAltRows("#alt-table", game.altRows, payload.event.currentRound);
   renderBestBallRows("#best-ball-table", game.bestBallRows);
   document.querySelector("#alt-verdict").textContent = game.altText;
   document.querySelector("#best-ball-verdict").textContent = game.bestBallText;
 }
 
-function renderScoreCard(prefix, team, opponent) {
+function renderScoreCard(prefix, team, opponent, tournament) {
   const total = document.querySelector(`#${prefix}-total`);
   const match = document.querySelector(`#${prefix}-match`);
   const rounds = document.querySelector(`#${prefix}-rounds`);
-  total.textContent = `${display(team.total)} ${formatToPar(team.toPar)}`;
+  total.textContent = tournament.showGameToPar === false ? display(team.total) : `${display(team.total)} ${formatToPar(team.toPar)}`;
   if (!Number.isFinite(team.total) || !Number.isFinite(opponent.total)) match.textContent = "Waiting";
   else if (team.total === opponent.total) match.textContent = "Tied";
   else if (team.total < opponent.total) match.textContent = `Up ${opponent.total - team.total}`;
   else match.textContent = `Down ${team.total - opponent.total}`;
-  rounds.innerHTML = team.rounds.map((round, index) => `<span>R${index + 1}: ${display(round.total)}</span>`).join("");
+  rounds.innerHTML = team.scoringRounds
+    .map((roundNumber) => `<span>R${roundNumber}: ${display(team.rounds[roundNumber - 1].total)}</span>`)
+    .join("");
 }
 
 function renderTeam(selector, team) {
@@ -116,8 +123,11 @@ function renderTeam(selector, team) {
     <tr>
       <td class="golfer-name">${escapeHtml(golfer.name)}</td>
       <td>${statusBadge(golfer)}</td>
-      <td>${formatTournamentScore(golfer)}</td>
-      ${golfer.rounds.map((round, roundIndex) => `<td class="${team.rounds[roundIndex].counting.includes(golferIndex) ? "counting" : ""}">${display(round)}</td>`).join("")}
+      <td>${display(golfer.gameTotal)}</td>
+      ${team.scoringRounds.map((roundNumber) => {
+        const roundIndex = roundNumber - 1;
+        return `<td class="${team.rounds[roundIndex].counting.includes(golferIndex) ? "counting" : ""}">${display(golfer.rounds[roundIndex])}</td>`;
+      }).join("")}
     </tr>
   `).join("");
 }
@@ -152,16 +162,16 @@ function statusBadge(golfer) {
   return `<span class="status ${status}">${escapeHtml(label)}</span>`;
 }
 
-function formatTournamentScore(golfer) {
-  if (!golfer.found) return "...";
-  const toPar = golfer.tournamentToPar;
-  const parText = toPar == null ? "" : toPar === 0 ? "E" : toPar > 0 ? `+${toPar}` : String(toPar);
-  return `${display(golfer.total)}${parText ? ` (${parText})` : ""}`;
-}
-
 function formatPosition(position) {
   if (!position) return "...";
   return Number(position) === 1 ? "1" : `T${position}`;
+}
+
+function formatRoundList(rounds) {
+  if (!rounds.length) return "";
+  if (rounds.length === 1) return `R${rounds[0]}`;
+  const consecutive = rounds.every((round, index) => index === 0 || round === rounds[index - 1] + 1);
+  return consecutive ? `R${rounds[0]}–R${rounds.at(-1)}` : rounds.map((round) => `R${round}`).join(", ");
 }
 
 function formatToPar(value) {

@@ -10,6 +10,10 @@ create table if not exists public.score_snapshots (
   unique (event_id, captured_minute)
 );
 
+-- Upgrade repositories that already created the older John Deere snapshot table.
+alter table public.score_snapshots
+  add column if not exists event_slug text;
+
 create index if not exists score_snapshots_event_captured_idx
   on public.score_snapshots (event_id, captured_at desc);
 

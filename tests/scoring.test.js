@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { getTournament, normalizeName, projectedRoundScore, scoreGame, scoreTeam } from "../public/scoring.js";
+import { getTournament, normalizeName, projectedRoundScore, scoreGame, scoreGolfer, scoreTeam } from "../public/scoring.js";
 
 function player(name, roundOne, roundTwoToPar, status = "playing") {
   return {
@@ -44,25 +44,22 @@ test("future placeholder rounds never create phantom scores", () => {
 });
 
 test("missed-cut golfers render as missed cut instead of not started", () => {
-  const result = scoreGame({
-    event: { slug: "tour-championship", currentRound: 3, par: 70 },
-    players: [{
-      id: "collin-morikawa",
-      name: "Collin Morikawa",
-      missedCut: true,
-      tournamentToPar: 2,
-      position: null,
-      rounds: {
-        1: { strokes: 72, toPar: 2, holes: 18, status: "complete" },
-        2: { strokes: 70, toPar: 0, holes: 18, status: "complete" },
-        3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
-      }
-    }]
-  }, getTournament("tour-championship"));
+  const result = scoreGolfer({
+    id: "sepp-straka",
+    name: "Sepp Straka",
+    missedCut: true,
+    tournamentToPar: 0,
+    position: null,
+    rounds: {
+      1: { strokes: 66, toPar: -4, holes: 18, status: "complete" },
+      2: { strokes: 76, toPar: 4, holes: 18, status: "complete" },
+      3: { strokes: null, toPar: null, holes: 0, status: "not_started" }
+    }
+  }, 3, 70);
 
-  assert.equal(result.altRows[0].status, "missed_cut");
-  assert.equal(result.altRows[0].rounds[2], null);
-  assert.equal(result.altRows[0].total, 142);
+  assert.equal(result.status, "missed_cut");
+  assert.equal(result.rounds[2], null);
+  assert.equal(result.total, 142);
 });
 
 test("Nordic characters normalize consistently", () => {
@@ -106,20 +103,33 @@ test("name aliases cover weekly pick spelling variations", () => {
   assert.equal(normalizeName("Ludvig"), normalizeName("Ludvig Aberg"));
   assert.equal(normalizeName("Fox"), normalizeName("Ryan Fox"));
   assert.equal(normalizeName("Rose"), normalizeName("Justin Rose"));
+  assert.equal(normalizeName("Keith"), normalizeName("Keith Mitchell"));
+  assert.equal(normalizeName("Sami Välimäki"), normalizeName("Sami Valimaki"));
+  assert.equal(normalizeName("Straka"), normalizeName("Sepp Straka"));
+  assert.equal(normalizeName("Rasmus"), normalizeName("Rasmus Højgaard"));
+  assert.equal(normalizeName("Thorbs"), normalizeName("Michael Thorbjornsen"));
+  assert.equal(normalizeName("Greyserman"), normalizeName("Max Greyserman"));
+  assert.equal(normalizeName("Kirk"), normalizeName("Chris Kirk"));
+  assert.equal(normalizeName("Higgo"), normalizeName("Garrick Higgo"));
 });
 
-test("TOUR Championship picks produce both team scores", () => {
+test("RSM Classic counts only rounds 2 through 4 and disables alternates", () => {
   const names = [
-    "Sam Burns", "Matt Fitzpatrick", "Si Woo Kim", "Chris Gotterup", "Collin Morikawa", "Ludvig Åberg",
-    "Scottie Scheffler", "Rory McIlroy", "Tom Kim", "Ryan Fox", "Viktor Hovland", "Justin Rose"
+    "Keith Mitchell", "Sami Välimäki", "Sepp Straka", "Rasmus Højgaard", "Michael Thorbjornsen",
+    "Maverick McNealy", "Max Greyserman", "Jackson Koivun", "Chris Kirk", "Garrick Higgo"
   ];
   const payload = {
-    event: { slug: "tour-championship", currentRound: 2, par: 70 },
+    event: { slug: "rsm-classic", currentRound: 2, par: 70 },
     players: names.map((name, index) => ({ ...player(name, 68 + (index % 4), index % 3), position: index + 1 }))
   };
-  const result = scoreGame(payload, getTournament("tour-championship"));
-  assert.ok(Number.isFinite(result.Sean.total));
-  assert.ok(Number.isFinite(result.Zach.total));
-  assert.equal(result.altRows.length, 2);
+  const result = scoreGame(payload, getTournament("rsm-classic"));
+  assert.equal(result.Sean.rounds[0].total, null);
+  assert.equal(result.Zach.rounds[0].total, null);
+  assert.equal(result.Sean.rounds[1].total, 140);
+  assert.equal(result.Zach.rounds[1].total, 141);
+  assert.equal(result.Sean.total, 140);
+  assert.equal(result.Zach.total, 141);
+  assert.equal(result.leaderText, "Sean leads by 1");
+  assert.equal(result.altRows.length, 0);
   assert.equal(result.bestBallRows.length, 2);
 });

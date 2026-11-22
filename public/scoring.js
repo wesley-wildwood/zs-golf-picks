@@ -1,28 +1,29 @@
 export const TOURNAMENTS = {
-  "tour-championship": {
-    slug: "tour-championship",
-    eventId: "401811964",
-    eventName: "TOUR Championship",
-    shortName: "TOUR Championship",
-    venue: "East Lake Golf Club",
-    location: "Atlanta, Georgia",
+  "rsm-classic": {
+    slug: "rsm-classic",
+    eventId: "401850981",
+    eventName: "The RSM Classic",
+    shortName: "RSM Classic",
+    venue: "Sea Island Golf Club",
+    location: "St. Simons Island, Georgia",
     par: 70,
+    scoringRounds: [2, 3, 4],
+    hasAlternates: false,
+    showGameToPar: false,
     teams: {
       Sean: {
-        starters: ["Sam Burns", "Matt Fitzpatrick", "Si Woo Kim", "Chris Gotterup"],
-        alt: "Collin Morikawa",
-        bestBall: "Ludvig Aberg"
+        starters: ["Keith Mitchell", "Sami Valimaki", "Sepp Straka", "Rasmus Hojgaard"],
+        bestBall: "Chris Kirk"
       },
       Zach: {
-        starters: ["Scottie Scheffler", "Rory McIlroy", "Tom Kim", "Ryan Fox"],
-        alt: "Viktor Hovland",
-        bestBall: "Justin Rose"
+        starters: ["Michael Thorbjornsen", "Maverick McNealy", "Max Greyserman", "Jackson Koivun"],
+        bestBall: "Garrick Higgo"
       }
     }
   }
 };
 
-export const DEFAULT_TOURNAMENT_SLUG = "tour-championship";
+export const DEFAULT_TOURNAMENT_SLUG = "rsm-classic";
 
 const NAME_ALIASES = new Map([
   ["rober-macintyre", "robert-macintyre"],
@@ -73,7 +74,24 @@ const NAME_ALIASES = new Map([
   ["fox", "ryan-fox"],
   ["ryan-fox", "ryan-fox"],
   ["rose", "justin-rose"],
-  ["justin-rose", "justin-rose"]
+  ["justin-rose", "justin-rose"],
+  ["keith", "keith-mitchell"],
+  ["keith-mitchell", "keith-mitchell"],
+  ["valimaki", "sami-valimaki"],
+  ["sami-valimaki", "sami-valimaki"],
+  ["straka", "sepp-straka"],
+  ["sepp-straka", "sepp-straka"],
+  ["rasmus", "rasmus-hojgaard"],
+  ["rasmus-hojgaard", "rasmus-hojgaard"],
+  ["thorbs", "michael-thorbjornsen"],
+  ["thorbjornsen", "michael-thorbjornsen"],
+  ["michael-thorbjornsen", "michael-thorbjornsen"],
+  ["greyserman", "max-greyserman"],
+  ["max-greyserman", "max-greyserman"],
+  ["kirk", "chris-kirk"],
+  ["chris-kirk", "chris-kirk"],
+  ["higgo", "garrick-higgo"],
+  ["garrick-higgo", "garrick-higgo"]
 ]);
 
 export function getTournament(slug) {
@@ -148,13 +166,20 @@ export function scoreGolfer(player, currentRound, coursePar) {
   };
 }
 
-export function scoreTeam(starterNames, players, currentRound, coursePar) {
+export function scoreTeam(starterNames, players, currentRound, coursePar, scoringRounds = [1, 2, 3, 4]) {
+  const scoringRoundSet = new Set(scoringRounds);
   const golfers = starterNames.map((name) => {
     const scored = scoreGolfer(findPlayer(players, name), currentRound, coursePar);
-    return { ...scored, name };
+    const countedScores = scored.rounds.filter((score, index) => scoringRoundSet.has(index + 1) && Number.isFinite(score));
+    return {
+      ...scored,
+      name,
+      gameTotal: countedScores.length ? countedScores.reduce((sum, score) => sum + score, 0) : null
+    };
   });
 
   const rounds = [0, 1, 2, 3].map((roundIndex) => {
+    if (!scoringRoundSet.has(roundIndex + 1)) return { total: null, counting: [] };
     const eligible = golfers
       .map((golfer, golferIndex) => ({ golferIndex, score: golfer.rounds[roundIndex] }))
       .filter((entry) => Number.isFinite(entry.score))
@@ -172,6 +197,7 @@ export function scoreTeam(starterNames, players, currentRound, coursePar) {
   return {
     golfers,
     rounds,
+    scoringRounds,
     total: rounds.some((round) => Number.isFinite(round.total)) ? total : null,
     toPar
   };
@@ -181,9 +207,10 @@ export function scoreGame(payload, tournament = getTournament(payload.event?.slu
   const currentRound = Math.min(4, Math.max(1, payload.event?.currentRound || 1));
   const coursePar = payload.event?.par || tournament.par;
   const players = payload.players || [];
-  const Sean = scoreTeam(tournament.teams.Sean.starters, players, currentRound, coursePar);
-  const Zach = scoreTeam(tournament.teams.Zach.starters, players, currentRound, coursePar);
-  const altRows = ["Sean", "Zach"].map((owner) => ({
+  const scoringRounds = tournament.scoringRounds || [1, 2, 3, 4];
+  const Sean = scoreTeam(tournament.teams.Sean.starters, players, currentRound, coursePar, scoringRounds);
+  const Zach = scoreTeam(tournament.teams.Zach.starters, players, currentRound, coursePar, scoringRounds);
+  const altRows = tournament.hasAlternates === false ? [] : ["Sean", "Zach"].map((owner) => ({
     owner,
     ...scoreGolfer(findPlayer(players, tournament.teams[owner].alt), currentRound, coursePar),
     name: tournament.teams[owner].alt
@@ -199,7 +226,7 @@ export function scoreGame(payload, tournament = getTournament(payload.event?.slu
     Zach,
     leaderText: matchupText(Sean, Zach),
     altRows,
-    altText: alternateText(altRows),
+    altText: altRows.length ? alternateText(altRows) : "No alternate match this week.",
     bestBallRows,
     bestBallText: bestBallText(bestBallRows, tournament.shortName)
   };
